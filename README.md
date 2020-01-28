@@ -20,3 +20,12 @@ Replace library.bib file with your BibTeX library file
 Compile
 
 Submit
+
+Institute for Transport studies LaTeX Template for E.Lambert
+=======================================================
+Fork of the Condensed Matter physics PhD Thesis Template, with changes appropriate for submission in the Institute for Transport Studies
+upstream - https://github.com/stonerlab/Thesis-template.git
+
+The tsedl branch will contain my in progress thesis rather than just a template. 
+
+ 

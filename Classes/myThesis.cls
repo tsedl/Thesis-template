@@ -35,7 +35,6 @@
 %%bookmarksopenlevel=2 %bookmarks pane opens to level 2
 %pdfstartview={FitH}}    
 
-
 \usepackage{textcomp} %solves \texteuro problem in bib
 %\usepackage[T1]{fontenc}
 \usepackage[ansinew]{inputenc}
@@ -65,7 +64,7 @@
 %% Other Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{color}
 \usepackage{upgreek} %upright greek letters
-\usepackage{physics}
+
 \usepackage[square,comma,sort&compress,numbers]{natbib}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{url}
