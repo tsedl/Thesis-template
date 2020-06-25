@@ -1,5 +1,12 @@
-\section{INTRODUCTION}
-%\section*{lit review}
+%=== Chapter Two ===
+\chapter{Dynamic Platooning for Automated Guided Vehicles (AGV)}
+
+
+
+\section{Introduction}
+AGV typically have their motion restricted to a roadmap connecting pick and drop locations \cite{Cardarelli2017}. This reduces the search space to make conflict free routing of multiple vehicles between different origins and destinations feasible. \cite{Digani2015} proposes a two level decomposition of the problem with the detailed roadmap at the bottom and a higher level abstraction of zones around each intersection above. The conflict avoidance is handled with local information within each zone. The routing decisions are made at high level, utilizing a traffic model where each intersection has a fixed capacity (number of vehicles). 
+ 
+%\section{INTRODUCTION}
 Coordinated conflict-free motion of a number of mobile robots in order to complete a material transfer task is important in the operation of fleets of AGV (Autonomous Guided Vehicles) used in flexible manufacturing and automated warehouses \cite{Vis2006} and \cite{Dotoli2019}. A crucial sub-problem is conflict resolution between multiple AGVs, without control of task assignment or scheduling.
 
 It is shown, in \cite{Digani2019}, that platooning provides superior throughput to the earlier reservation based systems, and that if a solution exists it is optimal, but not that a solution exists on all roadmaps. More importantly a set of conditions which must hold for a solution to exist, is not given. The consensus algorithm in \cite{Tadano2019} also shows improved throughput in concert with a scheduling approach, but does not prove convergence. 
