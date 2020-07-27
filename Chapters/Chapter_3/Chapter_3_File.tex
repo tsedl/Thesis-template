@@ -1,0 +1,14 @@
+%=== Chapter Three ===
+\chapter{Fitting Smooth Arcs to Polygon Regions - Comparative Results}
+
+\section{Introduction}
+To understand the advantages of using clothoid pieces to join two poses in a 2D obstacle field, it is informative to compare the output paths with an alternative curve type. One well known option is to use polynomial curves of  degree 3. 
+
+\section{Methodology}
+The paths are compared on two simulated environments. One is dimensioned for a small AGV with turning radius 0.5m, as might be used to deliver small items in a flexible manufacturing environment. The unexpected obstacle completely blocks the path to the right as in Figure \ref{fig:env1}. The second could represent a fork lift type AGV with a larger turning radius of 2m, which is collecting standard size (1m x1.2m) pallets from a storage area. See Figure \ref{fig:env1}. The pallets are placed by human drivers, and a reliable system fo detecting their position and orientation is assumed to be in place. The AGV must manoeuvrer to the pose of a target pallet, without colliding with the others. Lower curvature and sharpness allow the AGV to traverse the path faster without compromising load stability.
+
+\section{Algorithm}
+\subsection{Common Components}
+Both methods decompose the problem into topology followed by curve fitting. The topology problem is a posed as a directed graph with weighted edges. There is a node for every intersection of the boundary between two regions. Nodes within the same region are fully connected. The weight of each edge corresponds to the euclidean distance between the two nodes. The A* Algorithm is used to search for the set of edges which give the minimum sum of weights between any start and end pose.
+
+The sequence of edges is then used to populate the matrix $\bm{H} ^{(R \times P)} \in [0,1]$. This is a binary matrix containing $R$ columns, one for each of the $R$ polygonal regions which comprise the accessible space. Each row corresponds to one of the $P$ path pieces and contains a single non-zero element indicating the region to which is assigned. A path piece may be present in more than one region as the regions may be overlapping, but it must always remain completely inside its assigned region  
