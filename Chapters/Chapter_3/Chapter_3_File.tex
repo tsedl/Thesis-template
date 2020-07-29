@@ -8,7 +8,54 @@ To understand the advantages of using clothoid pieces to join two poses in a 2D 
 The paths are compared on two simulated environments. One is dimensioned for a small AGV with turning radius 0.5m, as might be used to deliver small items in a flexible manufacturing environment. The unexpected obstacle completely blocks the path to the right as in Figure \ref{fig:env1}. The second could represent a fork lift type AGV with a larger turning radius of 2m, which is collecting standard size (1m x1.2m) pallets from a storage area. See Figure \ref{fig:env1}. The pallets are placed by human drivers, and a reliable system fo detecting their position and orientation is assumed to be in place. The AGV must manoeuvrer to the pose of a target pallet, without colliding with the others. Lower curvature and sharpness allow the AGV to traverse the path faster without compromising load stability.
 
 \section{Algorithm}
-\subsection{Common Components}
 Both methods decompose the problem into topology followed by curve fitting. The topology problem is a posed as a directed graph with weighted edges. There is a node for every intersection of the boundary between two regions. Nodes within the same region are fully connected. The weight of each edge corresponds to the euclidean distance between the two nodes. The A* Algorithm is used to search for the set of edges which give the minimum sum of weights between any start and end pose.
 
-The sequence of edges is then used to populate the matrix $\bm{H} ^{(R \times P)} \in [0,1]$. This is a binary matrix containing $R$ columns, one for each of the $R$ polygonal regions which comprise the accessible space. Each row corresponds to one of the $P$ path pieces and contains a single non-zero element indicating the region to which is assigned. A path piece may be present in more than one region as the regions may be overlapping, but it must always remain completely inside its assigned region  
+The sequence of edges is then used to populate the matrix $\bm{H} ^{(R \times P)} \in [0,1]$. This is a binary matrix containing $R$ columns, one for each of the $R$ polygonal regions which comprise the accessible space. Each row corresponds to one of the $P$ path pieces and contains a single non-zero element indicating the region to which is assigned. A path piece may be present in more than one region as the regions may be overlapping, but it must always remain completely inside its assigned region.
+
+\subsection{Polynomial Method}
+The problem specification calls for a path which changes smoothly in x, y, heading and curvature. This should start at a specified $x_s, y_s, \psi_s$ with zero curvature and end at $x_g, y_g, \psi_g$ with zero curvature.
+
+\begin{equation}
+\begin{array}{c}
+x(t) = a + bt + ct^2 + dt^3 \\
+y(t) = e + ft + gt^2 + ht^3 \\
+\end{array}
+\label{eq:spline}
+\end{equation}\\
+
+There is a unique solution for a cubic spline of with fixed (x, y, heading) at the start and goal, passing through fixed $x, y$ positions numbering $n$. A cubic spline defined by Equation \ref{eq:spline} has eight free parameters per segment. To give a unique solution, eight constraints are must be found for each segment. Passing through the $n$ waypoints at the end of each segment gives two, one for the $x$ coordinate and one for $y$. Enforcing continuity of position between the end of each segment and the next leads to two more. Four more can be determined from continuity in the first and second derivative of position for a total of eight. 
+
+However, only four constraints are needed at the start and end of the spline. Fixing the final position and heading, the acceleration must be left free. 
+
+The system of linear equations is given in Equation \ref{eq:submatrixgen}. 
+
+\begin{equation}
+A_0 : \left[ \begin{matrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{matrix} \right]\bm{p} = [x_0, \dot{x}_0]^T 
+\label{eq:submatrix1}
+\end{equation}
+
+\begin{equation}
+i = 1:n-1, ,  
+A_i : \left[\begin{matrix}
+1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+1 & 1 & 1 & 1 & -1 & 0 & 0 & 0 \\
+1 & 1 & 2 & 3 & 0 & -1 & 0 & 0 \\
+0 & 0 & 2 & 6 & 0 & 0 & -2 & 0
+\end{matrix}\right] \bm{p} = [x_{i}, 0, 0, 0]^T
+\label{eq:submatrixgen}
+\end{equation}
+
+\begin{equation}
+A : A_0 = \left[ \begin{matrix}
+0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 0 & 0 & 1 & 2 & 3 \\
+\end{matrix}\right] \bm{p} = [x_n, \dot{x}_n]^T 
+\label{eq:submatrix_end}
+\end{equation}
+
+
+
+\subsection{Clothoid Method}
