@@ -21,40 +21,60 @@ x(t) = a + bt + ct^2 + dt^3 \\
 y(t) = e + ft + gt^2 + ht^3 \\
 \end{array}
 \label{eq:spline}
-\end{equation}\\
+\end{equation}
 
 There is a unique solution for a cubic spline of with fixed (x, y, heading) at the start and goal, passing through fixed $x, y$ positions numbering $n$. A cubic spline defined by Equation \ref{eq:spline} has eight free parameters per segment. To give a unique solution, eight constraints are must be found for each segment. Passing through the $n$ waypoints at the end of each segment gives two, one for the $x$ coordinate and one for $y$. Enforcing continuity of position between the end of each segment and the next leads to two more. Four more can be determined from continuity in the first and second derivative of position for a total of eight. 
 
-However, only four constraints are needed at the start and end of the spline. Fixing the final position and heading, the acceleration must be left free. 
-
-The system of linear equations is given in Equation \ref{eq:submatrixgen}. 
+However, only four constraints are needed at the start and end of the spline. Fixing the final position and heading, the acceleration must be left free. Stacking the parameters into a vector 
+\begin{equation}
+\bm{p}_i = [a_i, b_i, c_i, d_i, e_i, f_i, g_i]^T
+\end{equation} 
+and 
+\begin{equation}
+\bm{p} = [\bm{p}_1,\cdots,\bm{p}_i, \cdots, \bm{p}_{n-1}]^T
+\end{equation} 
+leads to the system of linear equations is given in Equation \ref{eq:assembled}. 
 
 \begin{equation}
-A_0 : \left[ \begin{matrix}
-1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-\end{matrix} \right]\bm{p} = [x_0, \dot{x}_0]^T 
-\label{eq:submatrix1}
+[\bm{A}|\bm{b}_{x}] = \left[\begin{array}{cccccc|c}
+\bm{A}_{0} & & & & \cdots & 0 & \bm{b}_{x0}\\
+\bm{0} & \bm{A}_{1} & & & \cdots & 0 & \bm{b}_{x1}\\
+\vdots & 	& \ddots &	& 	& \vdots	& \vdots \\
+0 & & \cdots & \bm{A}_{i} &  \cdots & 0 & \bm{b}_{xi}\\
+\vdots & 	& 	&	& \ddots  &		& \vdots \\
+0 & \cdots &  &  & &  \bm{A}_{n} 			& \bm{b}_{xn}\\
+\end{array}\right] 
+\label{eq:assembled}
+\end{equation}
+
+Where
+\begin{equation}
+[\bm{A}_{0}|\bm{b}_{x0}] = \left[ \begin{array}{cccc|c}
+1 & 0 & 0 & 0 & x_0\\
+0 & 1 & 0 & 0 & \cos{\phi_0}\\
+\end{array} \right] 
+\label{eq:submatrix_0}
 \end{equation}
 
 \begin{equation}
-i = 1:n-1, ,  
-A_i : \left[\begin{matrix}
-1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
-1 & 1 & 1 & 1 & -1 & 0 & 0 & 0 \\
-1 & 1 & 2 & 3 & 0 & -1 & 0 & 0 \\
-0 & 0 & 2 & 6 & 0 & 0 & -2 & 0
-\end{matrix}\right] \bm{p} = [x_{i}, 0, 0, 0]^T
-\label{eq:submatrixgen}
+[\bm{A}_{i}|\bm{b}_{xi}] = \left[\begin{array}{cccccccc|c}
+1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & x_{i}\\
+1 & 1 & 1 & 1 & -1 & 0 & 0 & 0 & 0\\
+1 & 1 & 2 & 3 & 0 & -1 & 0 & 0 & 0\\
+0 & 0 & 2 & 6 & 0 & 0 & -2 & 0 & 0
+\end{array}\right]
+\label{eq:submatrix_i}
 \end{equation}
 
 \begin{equation}
-A : A_0 = \left[ \begin{matrix}
-0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\
-0 & 1 & 0 & 0 & 0 & 1 & 2 & 3 \\
-\end{matrix}\right] \bm{p} = [x_n, \dot{x}_n]^T 
-\label{eq:submatrix_end}
+[\bm{A}_{n}|\bm{b}_{xn}] = \left[\begin{array}{cccccccc|c}
+0 & 0 & 0 & 0 & 1 & 1 & 1 & 1 &x_n\\
+0 & 1 & 0 & 0 & 0 & 1 & 2 & 3 & \cos{\psi_n}\\
+\end{array}\right] 
+\label{eq:submatrix_n}
 \end{equation}
+
+The $\bm{p}_x$ parameters to fit a set of $n$ waypoints can be found by computing $\bm{p}_x = \bm{A}^{-1}\bm{b}_x$. The $\bm{p}_y$ parameters can be found almost identically, by computing $\bm{p}_y=\bm{A}^{-1}\bm{b}_y$. Constraint vector $\bm{b}_y$ is instead constructed using the $y$ coordinates of the waypoints in $b_i$ and the $\sin$ of the start and end heading in $\bm{b}_{y0}$ and $\bm{b}_{yn}$.
 
 
 
