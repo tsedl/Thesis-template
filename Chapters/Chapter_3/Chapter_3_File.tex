@@ -76,6 +76,117 @@ Where
 
 The $\bm{p}_x$ parameters to fit a set of $n$ waypoints can be found by computing $\bm{p}_x = \bm{A}^{-1}\bm{b}_x$. The $\bm{p}_y$ parameters can be found almost identically, by computing $\bm{p}_y=\bm{A}^{-1}\bm{b}_y$. Constraint vector $\bm{b}_y$ is instead constructed using the $y$ coordinates of the waypoints in $b_i$ and the $\sin$ of the start and end heading in $\bm{b}_{y0}$ and $\bm{b}_{yn}$.
 
+\section{Optimisation}
+The point to point solution through the region intersection points is quite a good solution. Continuous in $\dot{X}$ and $\ddot{X}$, it reaches the goal position and heading. It is excessively constrained by the requirement to meet the intermediate waypoints.
+Using the optimisation in Equation \ref{eq:full_opt}  
+\begin{equation}
+\begin{array}{c}
+\min \sum_{j=1}^N ||\frac{dP_j^3(t)}{dt^3}||^2 \\
+\textrm{subject to} \\
+P_j(1) = P_{j+1}(0) \\
+\dot{P_j}(1) = \dot{P_j}(0) \\
+\ddot{P_j}(1) = \ddot{P_j}(0) \\
+P_1(0) = X_S \\ 
+P_N(1) = X_G \\
+\dot{P_1}(0) = \dot{X_S} \\
+\dot{P_N}(1) = \dot{X_G} \\ 
+\textrm{also subject to} \\
+\bm{H}_{j,r} \Rightarrow X_r^{min} \leq P_j(t) \leq X_r^{max} 
+\end{array}
+\label{eq:full_opt}
+\end{equation}
+
+The implementation of the region constraint in Equation \ref{eq:full_opt} must ensure the entire arc remains inside the assigned region according to $\bm{H}$. For piecewise linear arcs this can be done by checking the containment of the start $P_0(0)$ and end $P_N(1)$. Got cubic splines it is more challenging. Deits and Tedrake \ref{Deits2015} describe an approach based on Sum of Squares, where a small Semidefinite Program is solved in the parameters of $P_j$, to avoid sampling at different $t$ values, which can lead to the path cutting corners and even passing through thin obstacles.
+
+First we notice that the constraints on one segment from its axis aligned containing region described by $x_min, x_max, y_min, y_max$ can be written as vector inequality
+\begin{equation}
+ q(t) = \left[\begin{array}{c}
+ x_{max} - a - bt - ct^2 - dt^3 \\ 
+ a + bt+ ct^2 + dt^3 - x_{min} \\
+ y_{max} - e - ft - gt^2 - ht^3 \\ 
+ e + ft+ gt^2 + ht^3 - y_{min} \\
+ \end{array}\right] \geq \bm{0} \forall t \in [0,1]
+ \label{eq:qt}
+ \end{equation}
+. The condition in Equation \ref{eq:qt} can only hold if and only if it can be rewritten in the form
+\begin{equation}
+t\sigma_1(t) + (1-t)\sigma_2(t)
+\end{equation}
+. This leads to 
+\begin{equation}
+\sigma_1(t) = \left[\begin{array}{c}
+	x_{max} - a- b- ct- dt^2 \\
+	a + b+ ct+ dt^2 - x_{min} \\
+	y_{max} - e - f - gt - ht^2 \\
+	e + f+ gt+ ht^2 +-y_{min} \\
+	\end{array}\right]
+\end{equation}
+and 
+\begin{equation}
+\sigma_2 = \left[\begin{array}{c}
+x_{max} -a \\
+a - x_{min} \\
+y_{max} - e \\
+e - y_{min} \\
+\end{array}\right]
+\end{equation}. 
+The standard Sum of Squares approach calls for collecting the parameters of $\sigma(t)$ by the order of $t$. Matching coefficients against
+\begin{equation}
+\sigma_i = \beta_1 + \beta_2 t + \beta_3 t^2
+\end{equation}, gives
+\begin{equation}
+\beta_1 = \left[\begin{array}{c}
+x_{max} - a - b \\
+a + b - x_{min} \\
+y_{max} - e - f \\
+e + f + y_{min} \\
+x_{max} - a \\
+a - x_{min} \\
+y_{max} - e \\
+e + y_{min} \\
+\end{array}\right]
+\end{equation}
+and
+\begin{equation}
+\beta_2 = \left[\begin{array}{c}
+-c \\
++c  \\
+-c \\
++c \\
+0\\
+0 \\
+0 \\
+0 \\
+\end{array}\right]
+\end{equation}
+and
+\begin{equation}
+\beta_3 = \left[\begin{array}{c}
+-d \\
++d  \\
+-d \\
++d \\
+0\\
+0 \\
+0 \\
+0 \\
+\end{array}\right]
+\end{equation}
+. Where the parameters for $\sigma_2$ have been stacked after those from $\sigma_1$. 
+
+In order for $\sigma_i$ to be a sum of squares, there are the following conditions on $\beta_1$, $\beta_2$, $\beta_3$:
+\begin{equation}
+\begin{array}{c}
+4\beta_1\beta_3 - \beta_2^2 \geq 0
+\beta_1, \beta_3 \geq 0
+\end{array}
+\end{equation}
+
+ In the simple case where the regions are axis aligned, this immediately creates a problem as the first two equations have $\beta_3 = d$ and $\beta_3 = -d$. The only value of $d$ which will satisfy the sum of squares condition is zero. However the initial guess which joins the corner points, satisfies the region occupancy constraints with a non-zero $d$. 
+ 
+ For this reason the constraints are enforced using 50 samples for each path piece. This leads to a small degree of corner cutting which must be included in the safety factor used on the vehciel body width used to inflat the obstacle. It also results in a large number of constraints as there are four for each sample. For this to be posisble we must use a fixed spatial sampling length rather than a fixed number of samples per piece as path pieces can vary in length substantially which makes the degree of corner cutting variable.
+ 
+
 
 
 \subsection{Clothoid Method}
