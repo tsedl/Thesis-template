@@ -184,9 +184,26 @@ In order for $\sigma_i$ to be a sum of squares, there are the following conditio
 
  In the simple case where the regions are axis aligned, this immediately creates a problem as the first two equations have $\beta_3 = d$ and $\beta_3 = -d$. The only value of $d$ which will satisfy the sum of squares condition is zero. However the initial guess which joins the corner points, satisfies the region occupancy constraints with a non-zero $d$. 
  
- For this reason the constraints are enforced using 50 samples for each path piece. This leads to a small degree of corner cutting which must be included in the safety factor used on the vehciel body width used to inflat the obstacle. It also results in a large number of constraints as there are four for each sample. For this to be posisble we must use a fixed spatial sampling length rather than a fixed number of samples per piece as path pieces can vary in length substantially which makes the degree of corner cutting variable.
+ For this reason the constraints are enforced using 50 samples for each path piece. This leads to a small degree of corner cutting which must be included in the safety factor used on the vehicle body width used to inflate the obstacle. It also results in a large number of constraints as there are four for each sample. For this to be possible we must use a fixed spatial sampling length rather than a fixed number of samples per piece as path pieces can vary in length substantially which makes the degree of corner cutting variable.
  
 
 
 
 \subsection{Clothoid Method}
+Initialization with parameters which meet the continuity and obstacle constraints with clothoid pairs proved to be a challenging task. This is expected to improve the convergence time. To generate a set of parameters to meet continuity constraints for initialization of the region method is very similar to the interpolation problem addressed by Bertolazzi et al (2018) \cite{Bertolazzi2018}. The main difference is that the intermediate waypoint headings are free variables in the initialization, unlike in interpolation.
+
+If the waypoint headings are fixed, and curvature at them to zero, the clothoid interpolation problem can be solved for each segment independently, as described by \cite{Gim2017a}. Different point to point methods could be used such as the bisection method \cite{Gim2017b}, geometry \cite{Vazquez-Mendez2016} and minimax sharpness \cite{Henrie2007}. Lacking a natural heading, a heuristic based on the maximum squared sum of $a^2 + b^2$ and requiring $a>0$ and $b<0$ where $a$ is the distance to the intersection point from $P_1$ and $b$ is the distance from $P_2$. The different sign is important for the direction of travel, to put the intersection in front of the first pose and behind the second.
+
+The multiple shooting clothoid method uses additional parameters for the start pose of every segment. If this was initialized to zero, interior-point method reached convergence in about 70 seconds in environment 2. None of the more involved methods improved on this so we used the simple approach for further testing.  
+
+\section{Convergence dependence on $w$}
+The surprising relationship between the parameter weighting and the convergence was remarked up on for environment 1. One possible explanation is numerical conditioning being affected by the weighting. A large $w$ results in a solution with small $\alpha$, while the length remains on the same order. Some matrix operations may return inaccurate results with different magnitude parameters.
+\begin{center}
+	\begin{tabular}{ |c|c|c| }
+		 $w$ & 1 & 1000 \\ 
+		 fevals & 10873 & 200,000* \\  
+		 execution time (s)& 72 & 1345    
+	\end{tabular}
+\end{center}
+To test the hypothesis that only method using dense matrices such as sqp would be affected, the effect on the interior point method (no dense matrix operation used in interior-point) is reported in Table 99. This shows that changing the weighting damages convergence significantly to the extent that no valid result is found even after 200000 function evaluations. There were no warnings printed by fmincon during this run. The value of feasibilty was positive of the order 1e-6 and decreasing very slowly, while the objective function was large of the order 1e6 and also decreasing very slowly (relative to its magnitude).     
+
