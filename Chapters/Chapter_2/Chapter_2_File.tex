@@ -59,8 +59,8 @@ A promising approach for intersection control applied to AGV is given in \cite{D
 
 
 %Conflict avoidance is only one part of the DVFVRP problem, the job assignment method has a profound affect on the frequency and complexity of the motion conflicts which need to be resolved. For this reason it is important to track genuine transfer jobs, assigned to a fixed number of `physical' vehicles (they do not appear and disappear at convenient times and move only according to a second order dynamic model). There is a separate question of which job scheduling algorithm and associated traffic model is best suited to each conflict-resolution method which we will not address here. For simplicity of exposition and ease of reproduction we will use a nearest-first-come-first-served scheduling approach to create traffic for both conflict-resolution methods. This is sufficient that the  number of transfer tasks completed can be tracked in a simulation of `physical' vehicles. Improvement of productivity using a traffic model and the Hungarian algorithm (e.g. \cite{Sabattini2015a}) is left for further work. We know of no reason it would benefit one method in particular.
+\section{Simulation}
 
-\section{Method}
 Platooning with speed choice by a centralized controller was implemented with a vehicle to intersection messaging scheme. The full site is divided into zones, each one containing a single intersection. Each AGV in the fleet has a copy of the roadmap which is  static. The fleet controller interfaces with the warehouse management system to get the next material transfer job, consisting of a pick location and a drop location. All jobs are assumed to be of unit size and each AGV has a capacity of one unit. With these assumptions, a straightforward policy is to assign the next job to the AGV nearest to the pick location - first-come-first-served scheduling. When an AGV receives a new job, it finds the shortest path through the roadmap using the Floyd-Warshall algorithm \cite{Djojo2013}. Next it must send its planned path to the intersection controller for the zone it currently occupies. The intersection controller stores the plan and current position of every AGV approaching the conflict point of the intersection. Every time it receives a new plan it must recalculate the approach speed for every approaching AGV to minimize total travel time without collision. This will happen every time an AGV enters the zone from somewhere else, or an AGV within the zone is assigned a new job.
 
 %\begin{figure}[ht]
@@ -89,6 +89,30 @@ The dynamic model for each AGV assumes they are able to exactly follow the path,
 
 The ApproachPlan message sent by the AGV contains a sequence of segments which it intends to traverse, along with its current distance along the first one.  The flow of messages is shown in Figure \ref{fig:system_setup}. The SpeedList sent by the intersection controller contains the optimal speed for every segment in the plan. The speeds can be found with the nonlinear program in Equation \ref{eq:qp_speeds}. 
 
+\subsection{Motor Dynamic and Electrical Model}
+The simulated AGV are based on a small payload 100kg total mass, with a maximum speed of 10m/s and peak acceleration of 5m/s$^2$, allowing them to stop safely within 10 metres. The intersection controllers use a constant acceleration model to calculate the time and space deadlines they pass to the AGV. To make the simulation test worthwhile a simulation model with slightly more complexity was used to evaluate the performance.
+
+
+\begin{table}
+	\caption{Motor parameters used in simulation.}
+	\label{tab:motor_params} 
+	\centering
+	\begin{tabular}{ |c|c| }
+		\hline
+		$k_v$ [rpm/v]& 6 \\ 
+		$k_T$ [Nm/A] & 1.53 \\ 
+		$P_{mech}$@300rpm [kW] & 3.5 \\ 
+		$P_{elec}$@300rpm [kW]& 6.5 \\
+		*$R_a$ [Ohms] & 1.0 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+The brushless DC electric motor used in \cite{Racewicz2018} has suitable properties to propel a 100kg battery powered vehicle. The parameters are shown in Table \ref{tab:motor_params}.
+
+
+
+\section{Method}
 \subsection{Intersection Controller Objective}
 The objective is to minimize $J_T$ the total travel time for all vehicles. It is convenient for exposition to optimize over the inverse of speed of each segment $\phi_k = 1/v_k$. Vehicle $i$ submits a plan containing $m_i$ segments before the conflict and $n_i$ segments in conflict. The control model is based on the average speed of each approaching AGV over each segment. This is to simplify the description of the intersection controller, and assist analysis. More sophisticated motion models could take the place of  Equation \ref{eq:omega_min} and  Equation \ref{eq:omega_max} to create a similar type of problem with a convex travel time objective and non-convex constraints.   
 The parameters for one vehicle can be collected in the vector $\bm{\phi}_i$ as shown in Equation \ref{eq:phi_i}

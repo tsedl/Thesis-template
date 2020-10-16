@@ -196,13 +196,19 @@ If the waypoint headings are fixed, and curvature at them to zero, the clothoid 
 
 The multiple shooting clothoid method uses additional parameters for the start pose of every segment. If this was initialized to zero, interior-point method reached convergence in about 70 seconds in environment 2. None of the more involved methods improved on this so we used the simple approach for further testing.  
 
-\section{Convergence dependence on $w$}
+\section{Convergence dependence on $b$}
+\begin{figure}
+	\includegraphics[width=0.5\linewidth]{w_convergence_time_SMALL}
+	\label{fig:w_convergence}
+	\caption{Convergence time variation with weighting on item fetch environment}
+\end{figure}
+
 In environment 1 both large and small values of $w$ led to poor convergence. One possible explanation is numerical conditioning being damaged by the weighting. A large $w$ results in a solution with small $\alpha$, while the length remains on the same order. Some matrix operations may return inaccurate results with different magnitude parameters.
 \begin{table}
 \begin{center}
 	\begin{tabular}{ |c|c|c|c|c| }
 		\hline
-		 $w$ & $1\times10^{-3}$&  1 & 100 & 1000* \\ 
+		 $b$ & $1\times10^{-3}$&  1 & 100 & 1000* \\ 
 		 \hline
 		 fevals &7929 & 10873 & 11986& 200,000* \\  
 		 execution time (s)& 55 & 72 & 80 & 1345* \\
@@ -211,12 +217,56 @@ In environment 1 both large and small values of $w$ led to poor convergence. One
 	\end{tabular} \\
 		 *Convergence Failure
 \end{center}
-\label{tab:w_dependence}
-\caption{Convergence for different $w$ values for the multiple shooting approach, in pallet environment} 
+\label{tab:b_dependence}
+\caption{Convergence for different $b$ values for the multiple shooting approach, in pallet environment} 
 \end{table}
-To test the hypothesis that only method using dense matrices such as sqp would be affected, the effect on the interior point method (no dense matrix operation used in interior-point) is reported in Table 99. This shows that changing the weighting damages convergence significantly to the extent that no valid result is found even after 200000 function evaluations. There were no warnings printed by fmincon during this run. The value of feasibilty was positive of the order 1e-6 and decreasing very slowly, while the objective function was large of the order 1e6 and also decreasing very slowly (relative to its magnitude).
+To test the hypothesis that only method using dense matrices such as sqp would be affected, the effect on the interior point method (which does not depend on dense matrix operations) is reported in Table \ref{tab:b_dependence}. This shows that changing the weighting damages convergence significantly to the extent that no valid result is found even after 200000 function evaluations. There were no warnings printed by fmincon during this run. The value of feasibilty was positive of the order 1e-6 and decreasing very slowly, while the objective function was large of the order 1e6 and also decreasing very slowly (relative to its magnitude).
 
-Contrary to expectation, reducing $w$ to emphasize the path length reduced the number of iterations to convergence. Table  \ref{tab:w_dependence} shows an inverse relationship between $w$ and the number of iterations. Sufficiently large $w$ makes the problem more difficult to solve as the path segments deflect further, making a linear approximation worse. This effect is indirect because the constraints use the precise nonlinear dynamics and the interior-point method does not solve a series of linear approximations to the constraints like sqp. Interior point should always converge if given an initial guess in the feasible reason, unless the problem in non-convex. The inital graph step intended to remove non-convex elements of the problem may lead to suboptimal paths as the segments deviate from straight lines. But this does not explain the increasing number of iterations. 
+Contrary to expectation, reducing $b$ to emphasize the path length reduced the number of iterations to convergence. Table  \ref{tab:b_dependence} shows an inverse relationship between $b$ and the number of iterations. Sufficiently large $b$ makes the problem more difficult to solve as the path segments deflect further, making a linear approximation worse. This effect is indirect because the constraints use the precise nonlinear dynamics and the interior-point method does not solve a series of linear approximations to the constraints like sqp. Interior point should always converge if given an initial guess in the feasible reason, unless the problem is non-convex. The initial graph step intended to remove non-convex elements of the problem may lead to suboptimal paths as the segments deviate from straight lines. But this does not explain the increasing number of iterations. 
 
-Curvature is more weakly linked to the parameters than the total length. The curvature objective is the squared sum of $2r$ parameters while the length objective is the squared sum of $4r$ parameters. Both of them leave numerous parameters to be coupled through the constraints as in total there are $9r$ parameters for the multiple shooting formulation.  
+Curvature is more weakly linked to the parameters than the total length. The curvature objective is the squared sum of $2r$ parameters while the length objective is the squared sum of $4r$ parameters. Both of them leave numerous parameters to be coupled through the constraints as in total there are $9r$ parameters for the multiple shooting formulation. 
 
+\section{Generating a Convex Region Representation from LIDAR Data}
+A widely used representation for a 2D obstacle field is an occupancy grid \cite{Thrun1996}. Also see Probabilistic Robotics textbook \cite{thrun2005probabilistic} for details on creating a map from sensor data. Each cell represents an area of the floor, with a number $p\in[0,1]$ indicating the probability it contains an obstacle. Thresholding can be used to create a binary map of occupied and unoccupied cells. In order to connect adjacent unoccupied cells to form regions numerous approaches from image processing are available. A method suitable for simple environments is vertical cell decomposition \cite{LaValle2006c}. This begins with piecewise linear polygons, which can be created by connecting the cell corners of a binary occupancy grid.
+
+
+\section{Test Environment}
+The test environment was created for an automated fork lift AGV research platform which is taken to be representative \cite{Baird2018}. The obstacles are based on $(1.0 \times 1.2)$m pallets which are commonly used in the UK and Netherlands \cite{Raballand2005}. The datasheet for the manually operated vehicle on which the AGV is based, a Hyster E30-40HSD gives the dimensions in Table \ref{tab:dimensions}. The dimensions are drawn on a plan of the vehicle in Figure \ref{fig:fork_dims_circ}.
+
+\begin{figure}
+	\includegraphics[width=0.5\linewidth]{fork_dims_circ}
+	\label{fig:fork_dims_circ}
+	\caption{Dimensions used to expand the obstacles}
+\end{figure}
+\begin{table}
+	\begin{center}
+		\begin{tabular}{ |c|c| }
+			\hline
+			Parameter & Dimension (mm) \\
+			\hline
+			$W$ & 1067 \\
+			$L$ & 1583 \\
+			$r$ & 1289 \\
+			$L_s$ & 1001 \\
+			$S_0$* & 1200 \\
+			$R$* & 1300 \\
+			\hline  
+		\end{tabular} 
+	\end{center}
+	\label{tab:dimensions}
+	\caption{Dimensions from datasheet. *Stopping distance $R$ based on top speed 3.22m/s and hypothetical braking deceleration of 4m/s$^2$} 
+\end{table}
+The datasheet gives the maximum speed as 7.2 miles per hour (3.22m/s). Traction is provided by dual 4.8kw motors. The unloaded weight of the vehicle is 3059kg and the battery 1043kg for a total of 4201kg.  
+
+For correct operation it is important to consider the exclusion zone of the safety rated range sensor fitted to the front of the vehicle. If an obstacle breaches the exclusion zone the AGV must perform an emergence stop, or in some cases slow down significantly. To avoid slowing down the path planning must account for not only the shape of the vehicle but also the shape of this zone. Often this is a cuboid slightly wider than the vehicle, sufficiently long that the AGV can come to a complete stop from full speed before the front makes contact with a static obstacle. More details are available in the NIST Safety Standards \cite{Bostelmann2013}. To avoid 
+
+In the two simulated environments the obstacle field is represented in 2D. The bounding circle dimension is strongly influenced by the stopping distance $R$. 
+Starting from the constant acceleration equation
+$v^2 = u^2  + 2as$ and setting $v=0$ gives the stopping distance $s = \frac{u^2}{-2a}$. 
+\begin{figure}
+	\includegraphics[width=0.5\linewidth]{pallet_env_expand_2point5}
+	\label{fig:pallet_env}
+	\caption{Pallet environment. Obstacles are black with expansion by the vehicle disk shown in purple.}
+\end{figure}
+
+Expanding the environment with a disc the size of the largest dimension of the vehicle is a gross approximation, which will lead to over cautious paths. It would be better to represent the obstacles in (2 + 1) dimensions, and plan in ($x, y, \psi$). Obstacles can then be expanded based on the current heading of the path as described in \cite{Deits2015b} who use a sum of squares approach to find (2+1)D convex polygons. 
