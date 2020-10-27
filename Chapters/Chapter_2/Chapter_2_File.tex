@@ -151,6 +151,14 @@ F_D = C_{drag} \rho v^2 A
 \subsection{Arrival Distribution}
 see Arrival Distribution for Intersection Simulation (Sources!).docx
 
+\subsection{Division of Control Between Intersection-AGV and Message Interface}
+With different signal-free intersection control approaches, the functionality carried out centrally by the fixed-server compared to that by the mobile AGV varies significantly. Of particular interest are the interfaces used by Digani et al \cite{Digani2019} where the intersection provides average speeds for discrete segments, and the one used by Levin and Rey \cite{Levin2017} where the reservation message sent by the intersection contains the arrival time at the conflict point. 
+
+The arrival time at the conflict point is similar to a widely used waypoint interface. As the time is the important quantity for ensuring collisions are avoided this interface seems more sensible. However, on its own it is not sufficient to ensure FIFO behaviour of AGVS approaching in the same lane. Many studies assume an external mechanism for car-following based on local sensors such as the Intelligent Driver Model in \cite{He2020}.  
+
+Without a car-following or platooning approach locally on the AGV, simple methods to manage cross traffic can easily fail to maintain FIFO ordering. This problem is often encountered in traffic simulation with cellular models and there are various techniques to avoid it without generating a trajectory for each vehicle \cite{Carey2014}. 
+
+\cite{Levin2017} and \cite{Digani2019} do not mention any local car following behaviour and seek to avoid all collisions by the centralised application of constraints. This makes it difficult to compare them to a semaphore based intersection controller, unless car following is used in combination with semaphore access control.  
 
 \section{Methods For Zone-Based Intersection}
 \subsection{Intersection Controller Objective}
@@ -223,27 +231,39 @@ where
 
 \subsubsection{Linear FIFO Constraints}
 \label{sec:fifo_constraints}
-If the order in which the AGV cross the conflict zone is fixed to be First-In-First-Out, the timing constraint is linear. There is one constraint between each adjacent pair so $p-1$ constraints total for $p$ vehicles. These can be expressed in the form $\bm{A}_{ub}\phi \leq \bm{b}_{ub}$  as in Equation \ref{eq:fifo}. This is correct for two AGV arranged in distance order, each traversing one approach and one conflict segment. 
+If the order in which the AGV cross the conflict zone is fixed to be First-In-First-Out, the timing constraint is linear. For a pair where the leader enters the conflict at $t_i$ and takes $\Delta t_i$ seconds to cross at maximum speed the condition for entry time of the follower $t_{i+1}$ given by Equation \ref{eq:entry_time}.
+
+\begin{equation}
+	-t_{i} + t_{i+1}	\leq	\Delta t_i
+	\label{eq:entry_time} 
+\end{equation} 
+
+There is one constraint between each adjacent pair so $p-1$ constraints total for $p$ vehicles. These can be expressed in the form $\bm{A}_{ub}\phi \leq \bm{b}_{ub}$ as in Equation \ref{eq:fifo}. This is correct for two AGV arranged in distance order, each traversing one approach and one conflict segment. 
+
+
 
 \begin{equation}
 \left[ 
 \begin{array}{ccccc}
--d_1 & 0 & d_3 & d_4 \\
-\vdots 
+-d_1 & d_2 & \bm{0}\\
+\vdots & \ddots & \vdots \\
+\bm{0} & -d_{p-1} & d_p\
 \end{array} \right]
 \left[
  \begin{array}{c}
-  \phi_1 \\ \phi_2 \\ \phi_3 \\ \phi_4
+  \phi_1 \\ \vdots \\ \phi_p
  \end{array} \right]
 \leq
 \left[ 
 \begin{array}{c}
-0 \\ \vdots
+\Delta t_1 \\
+ \vdots \\
+ \Delta t_{p-1}
 \end{array} \right]
 \label{eq:fifo}
 \end{equation}
 
- The timing constriant between each pair of vehicles can be expressed with a modulus operator as in Equation\ref{eq:timing}.
+ The timing constraint between each pair of vehicles can be expressed with a modulus operator as in Equation\ref{eq:timing}.
 \begin{equation}
 |\alpha_i - \alpha_j| > \beta_i + \beta_j
 \label{eq:timing}
