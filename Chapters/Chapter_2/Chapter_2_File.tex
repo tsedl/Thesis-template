@@ -406,3 +406,7 @@ The design of an optimal intersection controller for a conflict point is very si
  To implement the ``plan/deadline'' interface, a binary semaphore for each conflict point was needed. The semaphore controller does not compute the entry and exit times of the conflict as it has is no model of the vehicle dynamics. It simply raises the semaphore, sending a ``full speed ahead'' message to the closest AGV to the intersection and a position deadline to all others.
  
  For this reason the deadline message contains the position at which the agv must stop, without any timing. The AGV must stop at the given position until it receives a 'proceed' message form the intersection controller.
+ 
+ \section{Performance Comparison}
+ The semaphore approach and the linear FIFO optimal controller were compared on a simulated intersection comprising two lanes which cross in the middle. The approach distance is fixed at 15 metres.
+ 
