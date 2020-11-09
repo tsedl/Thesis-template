@@ -149,7 +149,41 @@ F_D = C_{drag} \rho v^2 A
 
 
 \subsection{Arrival Distribution}
-*see Arrival Distribution for Intersection Simulation (Sources!).docx
+%*see Arrival Distribution for Intersection Simulation (Sources!).docx
+Previous work in road traffic modelling has used a variety of point distributions to model arrivals. A good summary is given in \cite{Knoop2020} or the chapter on Microsimulation in \cite{Sheffi1985}. 
+
+\subsubsection{Learning from Road Transport Models}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{poisson_cdf.eps}
+	\caption{Cumulative Distribution Function of arrivals following a Poisson distribution.}
+	\label{fig:poisson_cdf}
+\end{figure}
+One option is to assume arrivals at a point are completely independent of each other, but occur at an average rate for the time of day which has been measured by inductive loop placed in the road. These assumptions lead to a Poisson distribution such as that shown in Figure \ref{fig:poisson_cdf}. This can be generated computationally by drawing a sequence of numbers from a uniform distribution and applying Equation \ref{eq:poisson_delta} to compute the time delta until the next arrival. To validate the arrivals drawn in this way, we check the log plot of the frequency against time delta is linear and the median is equal to the specified rate as shown in Figure \ref{fig:1_minus_ln_cdf_arr}.   
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{ln(1-cdf)poisson_arr.eps}
+\caption{Log Cumulative Distribution Function of arrivals with linear fit.}
+\label{fig:1_minus_ln_cdf_arr}
+\end{figure}
+
+
+The assumption that arrivals are independent does not hold if traffic density is high. This is because vehicles slow down to keep a safe distance from the one in front of them. The simplest modification to the poisson distribution to account for this is to discard time deltas which violate the specified safe headway, leading to the shifted exponential distribution. A scatter plot of times from this distribution is shown in Figure \ref{fig:poisson_shifted_scatter}. Now the arrivals will always be realistic in the sense vehicle will not overlap/arrive unsafely but the variance will be smaller. The two parameters the average arrival rate $\lambda$ and the minimum safe headway $\tau$ together control the variance. This is because the median of the distribution must be $\lambda$, so if $1/\tau$ is close to $\lambda$ the variance must be very small.   
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{poisson_shifted_scatter.eps}
+\caption{Scatter plot of 500 arrival time deltas drawn from a shifted exponential distribution with a minimum headway of 0.2 seconds.}
+\label{fig:poisson_shifted_scatter}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{ln(1-cdf)poisson_arr.eps}
+	\caption{Log Cumulative Distribution Function of arrivals with linear fit.}
+	\label{fig:1_minus_ln_cdf_arr}
+\end{figure}
+
+\subsubsection{Unique Features of AGV Traffic}
 The arrival distribution corresponds to the properties of AGV traffic satisfying the following assumptions:
 \begin{itemize} 
 \item{More than one AGV is permitted to enter the same link if they are travelling in the same direction.}
@@ -158,6 +192,12 @@ The arrival distribution corresponds to the properties of AGV traffic satisfying
 \item{The capacity of a link is the number of AGVs which would fit without the inner front safety zone of each being tripped by the one in front. This can be calculated for $n$ AGVs each with safety zone length $d_e$ as $n_c = n\dot d_w$}
 \item{Every AGV is informed whether it is able to proceed before it reaches the end of its current link. The AGV will keep slowing down to stop at the end, until it is informed there is space on the next link, at which point it will accelerate to full speed. }
 \end{itemize}
+
+According to these assumptions, a suitable model is the shifted exponential, with a minimum headway based on the size of the AGV safety zone. 
+
+\subsubsection{Arrival Variation Based on Approach Lane Occupancy}
+Another consideration is how the traffic on the approach lanes should feed back into the arrival times. Based on the counting semaphore for each link assumption, this can be modelled with two queues at the entryway. The lane queue and the busy queue. If the occupancy of the lane is less the $n_c$, new arrivals are added to the lane queue at full speed, in the simulation interval exceeding their point arrival time, at a position they would have reached by the simulation time. If the occupancy of the lane is more than $n_c$ new arrivals are added to the back of the busy queue. At the next time step where $n<n_c$, the AGV at the front of the busy queue is moved onto the lane. The arrival speed is reduced according to acceleration rate $a_W$ based on the time between the arrival and the time step where is can proceed. For longer time periods the new arrival will have zero speed. All arrivals which were not at the front of the busy queue will arrive at the warning speed $v_w$=0.3m/s. 
+
 
 \subsection{Division of Responsibility Between Intersection and AGV Controllers}
 With different signal-free intersection control approaches, the functionality carried out centrally by the fixed-server compared to that by the mobile AGV varies significantly. Of particular interest are the interfaces used by Digani et al \cite{Digani2019} where the intersection provides average speeds for discrete segments, and the one used by Levin and Rey \cite{Levin2017} where the reservation message sent by the intersection contains the arrival time at the conflict point. 
