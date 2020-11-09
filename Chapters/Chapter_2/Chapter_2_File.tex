@@ -149,9 +149,17 @@ F_D = C_{drag} \rho v^2 A
 
 
 \subsection{Arrival Distribution}
-see Arrival Distribution for Intersection Simulation (Sources!).docx
+*see Arrival Distribution for Intersection Simulation (Sources!).docx
+The arrival distribution corresponds to the properties of AGV traffic satisfying the following assumptions:
+\begin{itemize} 
+\item{More than one AGV is permitted to enter the same link if they are travelling in the same direction.}
+\item{Entry to links in the roadmap is denied if the number already present on the link reaches a fixed capacity}
+\item{Car-following behaviour within the link is governed by the frontal safety system on board each AGV. This provides an outer (warning) zone which, if tripped, the AGV will slow to $w$m/s at $a_w$m/s and an inner zone (emergency)), which if tripped the vehicle will come to a complete stop at $a_e$m/s, where $|a_e|$ > $|a_w|$}
+\item{The capacity of a link is the number of AGVs which would fit without the inner front safety zone of each being tripped by the one in front. This can be calculated for $n$ AGVs each with safety zone length $d_e$ as $n_c = n\dot d_w$}
+\item{Every AGV is informed whether it is able to proceed before it reaches the end of its current link. The AGV will keep slowing down to stop at the end, until it is informed there is space on the next link, at which point it will accelerate to full speed. }
+\end{itemize}
 
-\subsection{Division of Control Between Intersection-AGV and Message Interface}
+\subsection{Division of Responsibility Between Intersection and AGV Controllers}
 With different signal-free intersection control approaches, the functionality carried out centrally by the fixed-server compared to that by the mobile AGV varies significantly. Of particular interest are the interfaces used by Digani et al \cite{Digani2019} where the intersection provides average speeds for discrete segments, and the one used by Levin and Rey \cite{Levin2017} where the reservation message sent by the intersection contains the arrival time at the conflict point. 
 
 The arrival time at the conflict point is similar to a widely used waypoint interface. As the time is the important quantity for ensuring collisions are avoided this interface seems more sensible. However, on its own it is not sufficient to ensure FIFO behaviour of AGVS approaching in the same lane. Many studies assume an external mechanism for car-following based on local sensors such as the Intelligent Driver Model in \cite{He2020}.  
