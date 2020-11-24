@@ -1,5 +1,68 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Conflict Points at Intersections and Adaptive Paths}
+\author{Edward Lambert}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
 %=== Chapter Four ===
-\chapter{Conflict Points at Intersections and Adaptive Paths}
+%\chapter{Conflict Points at Intersections and Adaptive Paths}
 \section{Introduction}
 The capacity and safety of an intersection can be considered in terms of the number and type of conflict points which it contains. When every entrance to the intersection is connected to every exit by a smooth arc, a conflict point exists wherever two arcs intersect. They can be classified as head-on, following, crossing, diverging or merging. In many studies these points are assumed to be fixed, and only speed of the vehicles which controls the rate of progress along the arcs is varied to minimise delay. 
 
@@ -8,12 +71,26 @@ With the development of path planning around obstacles on-the-fly, it becomes po
 \section{Literature Review} 
 Studies on the theoretical capacity of signalized intersections and roundabouts with an equivalent footprint indicate that in most cases, if there are few approach lanes small roundabouts will tend to have higher capacity. If there are many approach lanes signals tend to be more effective, unless the traffic on different approaches is extremely unequal \cite{Jian-an2001}. 
 
-A systematic procedure computing the conflict points in an intersection is given in \cite{Lu2013}. Roundabouts are dominated by a large number of merging and diverging conflicts, with few of the more dangerous crossing and head-on conflicts.
+A systematic procedure computing the conflict points in an intersection is given in \cite{Lu2013}. Roundabouts tend to have a large number of merging and diverging conflicts, but fewer or none of the crossing and head-on conflicts which lead to the most serious collisions due to high relative speeds.
 
-Intersection control often addresses crossing conflicts by separating vehicles in time, while they all take the shortest path straight through the intersection in the same way as if it was signal controlled. There are a wide range of optimal and heuristic approaches for design, both decentralized and centralized, a good review  is given in \cite{Malikopoulos2018}. Many studies have looked at how to incorporate a proportion of human controlled vehicles which are not able to communicate their intention. One way of doing this is using traffic signals which only apply to human drivers \cite{Zhao2019}. The downside is that the nature of the intersection must remain similar to a traffic-light controlled one if non-communicating participants are going to be controlled by lights.
+Intersection control often addresses crossing conflicts by separating vehicles in time, while they all take the shortest path straight through the intersection in the same way as if it was signal controlled. There are a wide range of optimal and heuristic approaches to solve for the speed profile, both decentralized and centralized, a good review is given in \cite{Rios-Torres2017}. Many studies have looked at how to incorporate a proportion of human controlled vehicles which are not able to communicate their intention. One way of doing this is using traffic signals which only apply to human drivers \cite{Zhao2019}. The downside is that the nature of the intersection must remain similar to a traffic-light controlled one if non-communicating participants are going to be controlled by lights.
 
-Recently a number of studies have addressed the extended intersection coordination of Connected and Autonomous Vehicles (CAVs) to the resolve the type of merging of diverging conflicts which occur and roundabouts. A centralized solution with an intersection manager minimizing delay and energy consumption is described in \cite{Zhao2018}. This shows that a high proportion of vehicles need to participate for significant benefits to be realized. 
+Recently a number of studies have extended intersection coordination of Connected and Autonomous Vehicles (CAVs) to the resolve the type of merging of diverging conflicts which occur and roundabouts. These are reviewed in \cite{Rios-Torres2017}. A centralized solution with an intersection manager minimizing delay and energy consumption is described in \cite{Zhao2018}. This shows that a high proportion of vehicles need to be communicating for significant benefits to be realized. 
 
-A decentralized approach based on intent communication by way of virtual vehicles, can also be applied to roundabouts. In \cite{Debada2016}, reactive heuristics are shown to lead to poor performance compared to a model predictive control approach. The virtual vehicle concept allows common lane based heuristics such as car following to be extended to resolve conflicts in  \cite{Debada2018}. 
+A decentralized approach based on intent communication by way of virtual vehicles, can also be applied to roundabouts. In \cite{Debada2016}, reactive heuristics are shown to lead to poor performance compared to a model predictive control approach. The virtual vehicle concept allows common lane based heuristics such as car following to be extended to resolve conflicts in  \cite{Debada2018}. Another work investigating virtual lanes is \cite{Xu2018}. Here a conflict graph is used to assign approaching vehicles to appropriate virutal lanes and a distributed controller is presented to stabilize the platoon.
 
-Another approach presented in \cite{Liu2018} is a decentralized as a solution to the global problem of minimizing the delay. Proofs of completeness and optimality of the aggregate problem are given, making this technique very impressive. It is not shown to be applicable to roundabouts in any of the numerical examples, although the incorporation of optimal trajectory planning by the low level controller to execute merging makes it a good example of the combination of path planning and intersection management. This collision constraints are based on a conflict zone rather than conflict points as in \cite{Levin2017}. The space inefficiency for multiple lanes is addressed by using multiple zones, one for each pair of lanes. The use of simulataneous path optimization might be expected to increase computational complexity and thereby reduce the number of vehicles with can be routed, however an attached video showing many vehicles interacting for about 10 minutes seems to refute this. It seem the ordering problem is resolved in a decentralized way based on game theory and the game `Chicken.' Solving large integer problems is known to be NP hard and may give this approach the edge over the mixed integer optimization used in \cite{Levin2017}, in terms of how many vehicles they can control before running into execution time limits. 
+Another approach presented in \cite{Liu2018} is a decentralized as a solution to the global problem of minimizing the delay. Proofs of completeness and optimality of the aggregate problem are given, making this technique very impressive. It is not shown to be applicable to roundabouts in any of the numerical examples, although the incorporation of optimal trajectory planning by the low level controller to execute merging makes it a good example of the combination of path planning and intersection management. This collision constraints are based on a conflict zone rather than conflict points as in \cite{Levin2017}. The space inefficiency for multiple lanes is addressed by using multiple zones, one for each pair of lanes. The use of simultaneous path optimization might be expected to increase computational complexity and thereby reduce the number of vehicles with can be routed, however an attached video showing many vehicles interacting for about 10 minutes seems to refute this. It seem the ordering problem is resolved in a decentralized way based on game theory and the game `Chicken.' Using game theory to resolve the ordering problem may give this approach an edge over the mixed integer optimization used in \cite{Levin2017}, in terms of how many vehicles they can control before running into execution time limits. It is a little surprising that the game would always produce the optimal ordering given the motion model used by each AGV. The consensus mechanism will be important here. Questions remain about the possiblilty of AGVs disagreeing about the order they calculate from the communicated position and speed data. 
+
+A similar method which solves the ordering ordering problem sequentially, followed by individual optimization of the approach speed along fixed paths is described in \cite{DeCampos2017}. This method claims only local (per-vehicle) optimality for the speed choice sub problem, and makes it clear the crossing order at convergence will be suboptimal, and depends strongly on the decision order. The sub problem is posed as a Linear Quadratic Regulator, commonly seen in optimal control problems. In general terms, those early in the decision order will deviate from the plans less. This is more of a problem when vehicles are not uniform, as to reduce energyu consumption a late arriving lorry should deviate as little as possible. A heuristic is given for the decision order based on the time to conflict arrival.
+
+The use of optimal control in \cite{DeCampos2017} is shared with many earlier works regarding coordination of Unmanned Arial Vehicles, which relaxed the assumption of static paths. In this way \cite{Schouwenaars2004} addressed the full multi-vehicle motion planning problem for small numbers of aircraft with simple dynamics. The craft were assumed to be differentially flat: that is, able to actuate in any of the workspace degrees of freedom independently, like a quadrotor. They were represented using bounding rectangles, leading to a slightly conservative mixed integer problem. The integer variables are used to choose which constraints are active. This might seem excessive when representing static obstacles, however when the constraints arise from other moving vehicles, the integer variables are a natural way to represent the passing-order problem. The scaling to larger numbers of vehicles is a particular challenge, due to the combinatorial explosion of possibilites.
+
+An alternative approach to the coordination of differetially flat aircraft which uses a sequential soltution of per-vehcle sub problems to approxiamte the global solution, is gven by \cite{Keviczky2008}. 
+ 
+
+%==================
+More text.
+\bibliographystyle{unsrt}
+\bibliography{roundabouts}
+
+\end{document}
