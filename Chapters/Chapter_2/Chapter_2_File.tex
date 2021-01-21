@@ -342,7 +342,7 @@ with $\bm{A} = diag(\bm{f} + \bm{e})$
 \end{equation}
 with $\bm{B} = diag(\bm{f} - \bm{e})$
 
-The resulting linear program (with parameters $\in\mathbb{R}$) has $p-1$ constraints as each AGV is only constrained by the preceeding one.
+The resulting linear program (with parameters $\in\mathbb{R}$) has $p-1$ constraints as each AGV is only constrained by the preceding one.
 
 \subsubsection{Quadratic Constraints}
 \label{sec:quad_constraints}
@@ -456,6 +456,48 @@ A controller based on a common heuristic for controlling access to a shared reso
  For this reason the deadline message contains the position at which the agv must stop, without any timing. The AGV must stop at the given position until it receives a 'proceed' message form the intersection controller.
  
  \section{Performance Comparison}
- The semaphore approach and the linear FIFO optimal controller were compared on a simulated intersection comprising two lanes which cross in the middle. The approach distance is fixed at 15 metres.
+ Both conflict point representation and the zone representation are identical if the intersection has exactly one conflict. On this basis the semaphore approach and two versions of minimum crossing time optimal control, one with FIFO linear constraints and the other with quadratic constraints were compared on a simulated intersection comprising two lanes which cross in the middle. The approach distance is fixed at 15 metres.
  
-The controllers will be tested with traffic levels, and control latencies intended to bound the likely values of these parameters. 
+The controllers will be tested with traffic levels and control latencies intended to bound the likely values of these parameters, shown in Table \ref{tab:test_params}.
+
+ \begin{table}
+	\caption{Parameters bounds used to generate test scenarios.}
+	\label{tab:test_params} 
+	\centering
+	\begin{tabular}{ |c|c|c| }
+		\hline
+		Parameter & High Bound & Low Bound \\
+		$T_C$ [s]& 0.5 & 0.1 \\ 
+		$\frac{1}{\lambda}=\Delta T_a$ [s]& 10 & 2 \\ 	
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& $\lambda_1$ & $\lambda_2$ & $f$ \\
+		\hline
+		HLHT & 0.5 & 0.5 & 2 \\
+		HLMT & 0.1 & 0.5 & 2 \\
+		HLLT & 0.1 & 0.1 & 2 \\
+		LLHT & 0.5 & 0.5 & 10 \\
+		LLMT & 0.1 & 0.5 & 10 \\
+		LLLT & 0.1 & 0.1 & 10 \\
+		\hline
+	\end{tabular}
+	\label{tab:params}
+	\caption{Parameters for test scenarios. All units s$^-1$. Each scenario is identified with the first two characters relating to the latency between periodic messages from the intersection controller where High Latency is 500ms and  Low Latency is 100ms and the second two relating to the arrival rate, where High Traffic has $\lambda$=10 arrivals per second on both approaches, Low Traffic has $\lambda$=2 arrivals per second on both, and Mixed Traffic has one lane with $\lambda_1$=10 and the other with $\lambda_2$=2. For example High Latency, High Traffic becomes HLHT.}
+\end{table}
+
+\section{Simulation Results}
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{RunIC-FIFO-1611163493_315159.eps}
+\label{fig:fifo_hlht}
+\caption{...}
+\end{figure}
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{RunIC-QuadConstr-1611164371_2017512.eps}
+	\label{fig:quad_hlht}
+	\caption{...}
+\end{figure}
