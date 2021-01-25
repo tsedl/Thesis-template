@@ -491,13 +491,112 @@ The controllers will be tested with traffic levels and control latencies intende
 \end{table}
 
 \section{Simulation Results}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{intersection_topo}
+	\caption{Intersection layout with two conflicting routes.}
+	\label{fig:intersection_topo}
+\end{figure}
+
+The different approaches to intersection control were evaluated on a simulation of a simple intersection, comprised of two 30m lanes which cross in the middle as shown in Figure \ref{fig:intersection_topo}. There are two entrances to the map, one at the start of each lane. By varying the arrival rate $\lambda$ and the update frequency $f$, six scenarios were created with the parameters shown in Table \ref{tab:params}.
+\begin{table}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& $\lambda_1$ & $\lambda_2$ & $f$ \\
+		\hline
+		HLHT & 0.5 & 0.5 & 2 \\
+		HLMT & 0.1 & 0.5 & 2 \\
+		HLLT & 0.1 & 0.1 & 2 \\
+		LLHT & 0.5 & 0.5 & 10 \\
+		LLMT & 0.1 & 0.5 & 10 \\
+		LLLT & 0.1 & 0.1 & 10 \\
+		\hline
+	\end{tabular}
+	\label{tab:params}
+	\caption{Parameters for test scenarios. All units s$^-1$. Each scenario is identified with the first two characters relating to the latency between periodic messages from the intersection controller where High Latency is 500ms and  Low Latency is 100ms and the second two relating to the arrival rate, where High Traffic has $\lambda$=10 arrivals per second on both approaches, Low Traffic has $\lambda$=2 arrivals per second on both, and Mixed Traffic has one lane with $\lambda_1$=10 and the other with $\lambda_2$=2. For example High Latency, High Traffic becomes HLHT}
+\end{table}
+
+\subsection{Trajectory Comparison with Fixed Arrival Pattern, 30 Second Run}
+\label{sec:fixed_arrival_pattern}
 \begin{figure}
-	\includegraphics[width=1.0\linewidth]{RunIC-FIFO-1611163493_315159.eps}
-\label{fig:fifo_hlht}
-\caption{...}
+	\includegraphics[width=1.0\linewidth]{SemaphoreTracesT6731315.eps}
+	\caption{Position time series for the semaphore heuristic controller in scenario 1.}
+	\label{fig:semaphore_st}       % Give a unique label
+\end{figure}
+The distance-time plot for the semaphore controller is shown in Figure \ref{fig:semaphore_st}. The distance axis is measured from the start of the submitted plan for the AGV. All plans start 15 metres from the conflict point on both lanes. AGV travelling in the x-direction are shown with 'x' markers, while those travelling in the y-direction are shown with triangle markers. The simulation did not proceed beyond 20 seconds because of a collision with a new arrival. 
+
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{OptimalFIFOTracesT707712-fixed.eps}
+	\caption{The position time series for the FIFO Optimal Controller in scenario 1.}
+	\label{fig:optimal_fifo_st}       % Give a unique label
+\end{figure}
+The distance-time plot for the FIFO Optinal Controller is shown in Figure \ref{fig:optimal_fifo_st}. It was able to proceed for the full 30 seconds without any collision as the approach lane did not fill up. This only shows that the throughput of the FIFO optimal control is higher than semaphore method, and is sufficient to meet the demand of $\lambda=0.5$ on each lane, without a queue forming.   
+
+In these two runs the arrival sources were not linked to the occupancy af the approach lane, so if the approach lane fills up, and average speed drops, so the new arrivals can appear right on top of vehicle at the back of the queue, leading to a collision which the interseciton controller is unable to prevent.  This is not a realistic crash situation because in a real site approaching vehicles will detect the back of queue with their front safety sensor and stop in time. 
+
+In Figure \ref{fig:optimal_fifo_st} it can be seen that 24 vehicles pass through the intersection in 30 seconds. This is very close to the upper limit of one vehicle per second determined by on the arrival rate. 
+
+\subsection{Trajectory Comparison with Dynmaic Arrival Pattern, 30 Departures Run}
+\label{sec:mutex_arrival_pattern}
+To understand more about the performance of the controllers the arrival pattern was linked to the appraoch lane occpancy. Rather than deal with the complexity of speed reductions due to safety sensors, the model was based on a roadmap reservation system which are widely usedin centralized or decentralized form. The capacity of the approach lane (10 metres long) was set to 1 AGV. If the static arrival pattern suggested an arrival while the lane was full, it entered an arrival queue. At the next simulation time step where the approach lane had capacity, if there was any vehicles in the queue, the first would be introduced to the simulation at the start of the approach lane with zero speed (as opposed to the random arrivals, which enter the lane at full speed).  
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{distance-time-FIFO-HighLatency-HighTraffic.eps}
+	\caption{The position time series for the FIFO Optimal Controller in the High Traffic High Latency Scenario}
+	\label{fig:optimal_fifo_st_HL_HT}       % Give a unique label
 \end{figure}
 \begin{figure}
-	\includegraphics[width=1.0\linewidth]{RunIC-QuadConstr-1611164371_2017512.eps}
-	\label{fig:quad_hlht}
-	\caption{...}
+	\includegraphics[width=1.0\linewidth]{Sempahore-716956HighTraffic-HighLatency.eps}
+	\caption{The position time series for the Semaphore Controller in the High Traffic High Latency Scenario.}
+	\label{fig:semaphore_st_HL_HT}       % Give a unique label
+\end{figure}
+
+With arrival lane capacity of one AGV, 30 AGVs were able to cross the intersection in 82.3 seconds with the semaphore control. With FIFO optimal control this was reduced to 49.6 seconds. This is a reduction of 39.7\%, entirely due to centralized speed choice, as both used FIFO ordering. The centralized optimal FIFO controller is able to predict when the conflict will become unoccupied, so following vehicles don't need to slow down as much as with Semaphore control. 
+
+The free flow time to cross 30 metres at maximum speed of 5 metres per second is six seconds. The mean travel time across the Semaphore controlled intersection was 309.1, indicating a delay of 309.1/30 - 6 = 4.30 seconds. The delay due to the FIFO Controlled intersection was 195.1/30 - 6 = 0.50s. This dramatic reduction might be expected given the objective for the FIFO optimal method was to minimise total travel time.   
+
+\subsection{Energy Consumption}
+The use of an approach speeds minimising total travel time increases the energy consumption per vehicle as shown in Table \ref{tab:energy_res}. The extra information about the departure time of leading vehicles should lead to reduced energy expense slowing down. As total energy usage (and therefore usage per vehicle) actually increase, and air resistance was not considered,  it suggests the higher average speeds reduce the efficiency of the motor.
+
+\begin{table}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		& Semaphore & FIFO Optimal \\
+		\hline
+		Total Electrical Energy (MJ) & 542.310& 641.170\\
+		Total Mechanical Energy (MJ) & 61.549& 68.448\\
+		Completion Time (s) & 82.3 & 49.6\\
+		Total Travel Time (s) & 309.1 & 195.1 \\
+		\hline
+	\end{tabular}
+	\label{tab:energy_res}
+	\caption{Energy and Completion Time Results }
+\end{table}
+
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{agv_e_021088_power_-FIFO-HighLatency-HighTraffic.eps}
+	\caption{The power dissipated over time for one AGV under FIFO control.}
+	\label{fig:021088power}       % Give a unique label
+\end{figure}
+\begin{figure}
+	\includegraphics[width=0.45\linewidth]{agv_e_021088_power_-FIFO-HighLatency-HighTraffic_zoom_out.eps}
+	\caption{Spurious data points of the power dissipated over time for one AGV under FIFO control.}
+	\label{fig:021088power_spurious}       % Give a unique label
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{agv_e_021088_power_-FIFO-HighLatency-HighTraffic-recalc.eps}
+	\caption{The electric power was recalculated from the logged value of armature current $i^2$R with a resistance of R=0.001$\omega$. The mechanical power weas recaluclated using the abs(motive\_force*velocity).}
+	\label{fig:recalc_021088power}       % Give a unique label
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{fifo_power_recalc_sum_all_agv.eps}
+	\caption{The power dissipated over time for all AGVs in total under FIFO control.}
+	\label{fig:fifo_power_sum}       % Give a unique label
+\end{figure}
+\begin{figure}
+	\includegraphics[width=1.0\linewidth]{semaphore_power_recalc_sum_all_agv.eps}
+	\caption{The power dissipated over time for all AGVs in total under Semaphore control.}
+	\label{fig:semaphore_power_sum}       % Give a unique label
 \end{figure}
