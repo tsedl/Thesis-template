@@ -9,6 +9,8 @@
               {./Chapters/Chapter_2/Chapter_2_Fig/}
               {./Chapters/Chapter_3/Chapter_3_Fig/}
               {./Chapters/Chapter_4/Chapter_4_Fig/}
+              {./Appendix1/Fig/}
+              {./Appendix2/Fig/}
               {./ThesisFigs/}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,7 +68,7 @@
 \usepackage{amsmath}
 %\usepackage[ruled,vlined]{algorithm2e} -> ifoddpage.sty not found error
 \usepackage{algorithmic}% -> looks rubbish
-
+\usepackage[final]{pdfpages} % for lazy appendix
 \linespread{1.3} %1.5 line spacing
 
 \begin{document}
@@ -109,7 +111,7 @@
 
 \appendix
 \include{Appendix1/Appendix1}
-%\include{Appendix2/Appendix2}
+\include{Appendix2/Appendix2}
 %. More appendicies here.
 \addcontentsline{toc}{chapter}{References} % Adds References to contents page
 %One sectio special { Chapters/Chapter1/SamplingBasedMethods/SamplingBasedPlanningCollection }
