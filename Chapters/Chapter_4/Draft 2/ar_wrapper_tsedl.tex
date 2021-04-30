@@ -62,12 +62,12 @@ grestore
 % \newcommand{}{}
 %
 % Insert the name of "your journal" with
-% \journalname{myjournal}
+ \journalname{Springer Autonomous Robots}
 %
 
 \begin{document}
 
-\title{Optimal Control of AGV Intersections and the Avoidance of Queues}
+\title{Intersection Control for Automated Vehicles }
 \thanks{ This research was made possible thanks to the financial support of a Full-time EPSRC Doctoral Training Partnership Studentship Institute for Transpoirt Studies and also thanks to CASE partner Guidance Automation Limited. 
 %Grants or other notes
 %about the article that should go on the front page should be
@@ -81,7 +81,7 @@ grestore
         Richard Romano  \and David Watling %etc.
 }
 
-%\authorrunning{Short form of author list} % if too long for running head
+\authorrunning{ED Lambert \and R Romano \and DP Watling} % if too long for running head
 
 \institute{E.D. Lambert \and R. Romano \and D.P.Watling \at
               Institute for Transport Studies, University of Leeds, 35- 41 Universiy Road, LS2 4JT  \\
@@ -94,18 +94,21 @@ grestore
 \date{Received: date / Accepted: date}
 % The correct dates will be entered by the editor
 
-
+\twocolumn[
+  \begin{@twocolumnfalse}
 \maketitle
-
 \begin{abstract}
-Insert your abstract here. Include keywords, PACS and mathematical
+The contribution of the current work is to investigate the performance of certain per-intersection controller designs when the one-vehicle-per-segment assumption is relaxed. Particular attention has been paid to collision risks to ensure safe distances are always maintained over the simulation runs. A new waypoint interface makes it possible to simplify the constraints and find optimal approach speeds with a linear program, which is described in detail. Due to the linearity of the constraints, the optimal speeds for a large number of vehicles can be computed in a short time with interior point methods, guaranteeing completeness and ensuring infeasible problems are detected immediately. A longitudinal speed controller is described which allows simulated vehicles with limited motor power and electrical losses to arrive at the waypoints close to the set time, so that safe behaviour is guaranteed as long as deviations from the control model remain within tolerance. Total Travel Time is shown to be comparable to the quadratic constraints method despite the fixed crossing order, and much improved compared to a semaphore approach which also guarantees safety. Include keywords, PACS and mathematical
 subject classification numbers as needed.
 \keywords{First keyword \and Second keyword \and More}
 % \PACS{PACS code1 \and PACS code2 \and more}
 % \subclass{MSC code1 \and MSC code2 \and more}
 \end{abstract}
 
-\include{../IntersectionCore/intersection_control}
+\end{@twocolumnfalse}
+]
+
+\input{../IntersectionCore/intersection_control}
 %\section{} ....
   
 %\begin{acknowledgements}
