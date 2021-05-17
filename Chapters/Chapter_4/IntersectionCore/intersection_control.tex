@@ -1,33 +1,76 @@
-\section{Introduction}
+ 
 
-Reservation-based intersection management for preventing collisions between autonomous vehicles at intersections by V2V communication has been the topic of numerous studies considering road traffic. A good review is \cite{Chen2016}, another review focusing on optimization methods \cite{Malikopoulos2018}. Some early studies utilized a First-Come-First-Served (FCFS) policy which was shown to outperform signal control in some situations \cite{Dresner2008}. Problematic cases where performance could be worse than signal control were identified by \cite{Levin2016}. To capture the potential capacity improvements other works have used convex optimization \cite{Dai2017}.
-The problem can also be posed as a mixed-integer optimization considering both the approach speed the arrival order as in \cite{Levin2017}.  
-In \cite{Digani2019}, Digani et al present a per-intersection controller which calculates segment speeds for all approaching vehicles to minimize the total crossing time. They show that the reduction in crossing delay is far more than the increase in computation time for a realistic six way intersection, compared to a state-of-the-art decentralized approach. Like many existing studies of AGV co-ordination it is assumed that only one AGV at a time may be present on each path segment.
+%\subsection{Dynamic Simulation}
+%In order to comment on safety performance the simulated dynamics of the AGV a custom simulation was deveoped in Python. There is a great deal of software already available for simulating vehicle interactions. We reviewed those discussed below, but found it was more approporiate to further develop the simulation used for our earlier work to answer research questions related to the operation of robotic intralogistics vehicles \cite{Lambert2020a}.
 %
-%    
-%    
-%\section{Literature Review}
-%...
-  
+%These additional dynamic effects mean the timing specification sent by the intersection controller will always be missed by a small amount as it would be if the controller was communicating with embodied robots acting in a real logistics environment. In order to comment on the total energy consumption, it would be useful to model second order dynamics, allowing the dissipated power to be approximated by the acceleration. Acceleration is a good proxy for motor power in a low speed system like logistics, where there is little air resistance but lots of stopping and starting. In order to investigate the effect of communication latency the simulation time-step should be smaller than the hypothetical communication latency for client/server control over a limited bandwidth network. Lateral tracking behaviour need not be considered if we assume all AGV are able to traverse the given path with negligible lateral error. This is not too unrealistic if the paths account for dynamic limitations limitations of the vehicles which will traverse them such as radial polynomials \cite{Digani2014obs} or clothoid transitions \cite{lambertoptimalobstacles}.
+%
+%With these requirements in mind, a number of off-the-shelf traffic simulation software packages were investigated. To give a brief overview we considered traditional closed source modelling software such as DRACULA \cite{Liu2005}, MATSim \cite{AndreasHorni2016}, PTV VISSIM \cite{Kara2014} and Aimsun \cite{lenorzer2015modelling}. These are powerful tools with a focus on recreating interesting microscopic traffic behaviour arising from human driven vehicles. For example DRACULA operates on a detailed road network combined with trip matrix indicating travel demand. Vehicles enter the network according to a distribution which corresponds to the trip matrix. Individual vehicles are tracked until they reach their destination, as if they parked off the road. Average speeds are calculated based on completed trips making it possible to comment on the expected delay for a journey which began at a certain time. Different junction types with and without traffic lights are handled with custom logic and are inherently conflict-free. Longitudinal behaviour is based on the intelligent driver model of human car following which is more realistic than the earlier Gipps model, but still cannot guarantees that a safe distance will be maintained within the dynamic limitations of the vehicles, which is required to guarantee collision avoidance. SUMO \cite{Busquets2016}, is an open source traffic simulator also intended as a model of human operated vehicles. It is highly configurable, and with enough modification it would be possible to modify both the  individual vehicle logitudinal control and the intersection control to reflect the two -layer control architecture proposed by \cite{Digani2015} but the only components then reused would be the vehicle dynamcs, the position trackjing and the vizualization. The tool for generating large pattern based roadmaps based on grids or webs could be used standalone, according to the open `.net' format, based on `.xml'
+%
+%Another option considered was using an existing robot dynamic simulator. Stage \cite{Vaughan2008} is designed for large numbers of robots, but is unsuitable as it relies on a first order dynamics. Another option was Gazebo \cite{Rivera2019} which has been used in similar works such as \cite{Walenta2017} and \cite{Yan2017}, where ROS (Robot Operating System) libraries were used to implement the control algorithms, so the same binaries could equally be linked to a full Gazebo simulation or a collection of physical test robots. This is a great option but would force us to implement robust lateral control and other systems needed for a real AGV which are incidental to our contribution. %In \cite{Digani2019}, leveraged an industrial partner to fill this gap. 
+%ROS1 also has some issues with multiple vehicles which require another system to work around, for example another library Fawkes in one notable competition \cite{Niemueller2017}. An better option would be the new ROS2 library which does away with the single master architecture and TCP messaging protocol \cite{Eros2019} but is more sparsely documented and under active development at the time of writing, so we leave it for further work. 
+%
+%%Initial experiments reported in \cite{Lambert2020a} and \cite{Lambert2020b}, made use of a bespoke Python simulation. We continued to develop this custom simulation to add the required functionality, instead of heavily modifying an existing microsimulation package or adding multiple vehicles to a dynamic simulator like Gazebo. The Python files for our simulation, and all the tested controllers are available in GitHub \cite{Lambert2020}.   
 
-\subsection{Dynamic Simulation}
-In order to comment on safety performance the simulated dynamics of the AGV a custom simulation was deveoped in Python. There is a great deal of software already available for simulating vehicle interactions. We reviewed those discussed below, but found it was more approporiate to further develop the simulation used for our earlier work to answer research questions related to the operation of robotic intralogistics vehicles \cite{Lambert2020a}.
-
-These additional dynamic effects mean the timing specification sent by the intersection controller will always be missed by a small amount as it would be if the controller was communicating with embodied robots acting in a real logistics environment. In order to comment on the total energy consumption, it would be useful to model second order dynamics, allowing the dissipated power to be approximated by the acceleration. Acceleration is a good proxy for motor power in a low speed system like logistics, where there is little air resistance but lots of stopping and starting. In order to investigate the effect of communication latency the simulation time-step should be smaller than the hypothetical communication latency for client/server control over a limited bandwidth network. Lateral tracking behaviour need not be considered if we assume all AGV are able to traverse the given path with negligible lateral error. This is not too unrealistic if the paths account for dynamic limitations limitations of the vehicles which will traverse them such as radial polynomials \cite{Digani2014obs} or clothoid transitions \cite{lambertoptimalobstacles}.
-
-With these requirements in mind, a number of off-the-shelf traffic simulation software packages were investigated. To give a brief overview we considered traditional closed source modelling software such as DRACULA \cite{Liu2005}, MATSim \cite{AndreasHorni2016}, PTV VISSIM \cite{Kara2014} and Aimsun \cite{lenorzer2015modelling}. These are powerful tools with a focus on recreating interesting microscopic traffic behaviour arising from human driven vehicles. For example DRACULA operates on a detailed road network combined with trip matrix indicating travel demand. Vehicles enter the network according to a distribution which corresponds to the trip matrix. Individual vehicles are tracked until they reach their destination, as if they parked off the road. Average speeds are calculated based on completed trips making it possible to comment on the expected delay for a journey which began at a certain time. Different junction types with and without traffic lights are handled with custom logic and are inherently conflict-free. Longitudinal behaviour is based on the intelligent driver model of human car following which is more realistic than the earlier Gipps model, but still cannot guarantees that a safe distance will be maintained within the dynamic limitations of the vehicles, which is required to guarantee collision avoidance. SUMO \cite{Busquets2016}, is an open source traffic simulator also intended as a model of human operated vehicles. It is highly configurable, and with enough modification it would be possible to modify both the  individual vehicle logitudinal control and the intersection control to reflect the two -layer control architecture proposed by \cite{Digani2015} but the only components then reused would be the vehicle dynamcs, the position trackjing and the vizualization. The tool for generating large pattern based roadmaps based on grids or webs could be used standalone, according to the open `.net' format, based on `.xml'
-
-Another option considered was using an existing robot dynamic simulator. Stage \cite{Vaughan2008} is designed for large numbers of robots, but is unsuitable as it relies on a first order dynamics. Another option was Gazebo \cite{Rivera2019} which has been used in similar works such as \cite{Walenta2017} and \cite{Yan2017}, where ROS (Robot Operating System) libraries were used to implement the control algorithms, so the same binaries could equally be linked to a full Gazebo simulation or a collection of physical test robots. This is a great option but would force us to implement robust lateral control and other systems needed for a real AGV which are incidental to our contribution. %In \cite{Digani2019}, leveraged an industrial partner to fill this gap. 
-ROS1 also has some issues with multiple vehicles which require another system to work around, for example another library Fawkes in one notable competition \cite{Niemueller2017}. An better option would be the new ROS2 library which does away with the single master architecture and TCP messaging protocol \cite{Eros2019} but is more sparsely documented and under active development at the time of writing, so we leave it for further work. 
-
-%Initial experiments reported in \cite{Lambert2020a} and \cite{Lambert2020b}, made use of a bespoke Python simulation. We continued to develop this custom simulation to add the required functionality, instead of heavily modifying an existing microsimulation package or adding multiple vehicles to a dynamic simulator like Gazebo. The Python files for our simulation, and all the tested controllers are available in GitHub \cite{Lambert2020}.   
-
+\section{Application Context}
 \subsection{Roadmap-based AGV System}
-In general, a demand responsive AGV system for intra-logistics or a smart factory is concerned with completing a series of material transfer tasks. Each task consists of moving one unit load from a given pick location to the specified drop location. A well known solution to motion planning in a well known environment involves simplifying the free space into a (possibly irregular) lattice of reachable states, connected by arcs if there exists a feasible transition from one state to the other, to create  roadmap which can be encoded as a graph. A sequence of intermediate positions associated with each arc is sometimes stored alongside to avoid online re-computation. Using the roadmap graph, motion plans between any two states can be generated using a shortest path algorithm, which are detailed enough to be followed by the lateral position controller on board the vehicle. 
+Consider a demand responsive AGV system for intra-logistics \cite{Boysen2019} or a smart factory \cite{Dotoli2019}. The system is concerned with completing a series of material transfer tasks. 
+%The assumption each task consists of moving one unit load from a given pick location to the specified drop location. 
+A well known solution to motion planning in a well known environment involves simplifying the free space into a (possibly irregular) lattice of reachable states, connected by arcs if there exists a feasible transition from one state to the other, to create  roadmap which can be encoded as a graph. A sequence of intermediate positions associated with each arc is sometimes stored alongside to avoid online re-computation. Using the roadmap graph, motion plans between any two states can be generated using a shortest path algorithm, which are detailed enough to be followed by the lateral position controller on board the vehicle. 
 
-In a centralized system the transfer tasks are assigned to available AGVs by a single scheduler which is aware of the status of every task and the position of every vehicle. The optimal assignment would minimize the makespan or total time for the completion of all tasks, but in practice this may be too time consuming, especially if new tasks are being generated all the time like in a fulfilment centre, and different heuristics such as nearest-first assignment are useful. Conflict-free route planning depends on the task assignment and can be solved for jointly along with the assignment or performed sequentially based on a fixed assignment by searching the space time extended network to guarantee collisions are avoided.
+In a centralized system the transfer tasks are assigned to available AGVs by a single scheduler which is aware of the status of every task and the position of every vehicle. The optimal assignment would minimize the makespan or total time for the completion of all tasks, but in practice this may be too time consuming, especially if new tasks are being generated all the time like in a fulfilment centre \cite{Azadeh2019}. Conflict-free route planning depends on the task assignment and can be solved for jointly along with the assignment or performed sequentially based on a fixed assignment by searching the space time extended network to guarantee collisions are avoided.
 
-Recently a number of decentralized systems have been developed which offer advantages in the number of vehicles that can operate in one area. In \cite{Walenta2017}, a roadmap representation is still used, but the roadmap is shared between vehicles. The partially decentralized system described in \cite{Digani2014coord} combines traffic routing with per-intersection control is primarily roadmap based. In \cite{Cardarelli2017} is it improved with the possibility for an AGV to deviate from the roadmap based on its own sensors and based on a shared sensor state called the global live view. In such a decentralized system, an intersection controller cannot be assumed to know the motion plan of approaching vehicles, unless they communicate their intention as part of the protocol. To this end it is assumed a channel exists with sufficient bandwidth and a fixed latency $T$ for the messages described in Section \ref{sec:dual_waypoint}.
+Recently a number of decentralized systems have been developed which offer advantages in the number of vehicles that can operate in one area, reduced downtime for reconfiguration and safe interaction with human operators \cite{Fragapane2021} . In \cite{Walenta2017}, a roadmap representation is still used, but the roadmap is shared between vehicles. The partially decentralized system described in \cite{Digani2014coord} combines traffic routing with per-intersection control is primarily roadmap based. In \cite{Cardarelli2017} is it improved with the possibility for an AGV to deviate from the roadmap based on its own sensors and based on a shared sensor state called the global live view. In such a decentralized system, an intersection controller cannot be assumed to know the motion plan of approaching vehicles, unless they communicate their intention as part of the protocol. To this end it is assumed a channel exists with sufficient bandwidth and a fixed latency $T$ for the messages described in Section \ref{sec:dual_waypoint}.
+
+\section{Modelling Plant and Interacting Digital Control Systems}
+To examine the approach to intersection control, we include an agent based model for every AGV at the intersection with access to strictly limited information which might be available from on-board sensors. All additional state information is sent according to the messaging interface defined in Section \ref{sec:dual_waypoint}. It is an implementation of AIM* \cite{Levin2017}, with some adaptations to use the roadmap representation of Digani et al, which is typical in the AGV space \cite{Digani2019}. AIM* was selected as it offers scope for the intersection controller to improve performance through optimization, compared to earlier interface descriptions such as \cite{Dresner2004}.  
+\subsection{Dual Waypoint Interface}
+\label{sec:dual_waypoint}
+The dual waypoint interface is designed to be decoupled from the algorithms for scheduling and routing as far as possible. In order to support decentralized routing with adaptive paths, each approaching vehicle must send an ApproachPlan message to containing a detailed plan for how it intends to cross the intersection.  The ApproachPlan contains four parameters $d =\left[ t_A, \bm{X}( s_A ), v_A, \bm{X}(s) \right]$. The plan consists of a transmission timestamp $t_A$, a measured position $\bm{X}(s_A)$, and speed $v_A$ at the given time and a sequence of feasible positions with no timing information, the path $\bm{X}(s)$. 
+
+Embedding the path in each request for guidance means that approaching AGV can use obstacle avoidance planning before they enter the approach lane, and still receive the correct speeds at the intersection. As a result the size and shape of the conflict zone is not fixed but depends on the current traffic situation and the approach plans received.
+
+The conflict zone shape is calculated by discretizing $\bm{X}(s)$ into linear segments of length $L=1$m and searching for points where the minimum distance between two segments exceeds the diameter of the AGV bounding circle, and the direction of the segment is different. This ensures there is no conflict point identified where one segment joins another, which arises when two AGV are following the same path one after the other.  
+
+The intersection controller is responsible for generating an optimal speed profile for this path $v(t)$, to create a trajectory which satisfies the collision avoidance constraints with the trajectories of all known approaching vehicles $\bm{\xi}_i(t) \forall i \in N$. 
+
+The trajectory across the intersection $\bm{\xi}(t)$ is found from the path $\bm{X}(s)$, the start time $t_A$ and start position $\bm{X}(s_A)$ using Equation \ref{eq:integrate}.
+\begin{equation}
+\bm{\xi}(t)  = \bm{X}(s_A) + \int_{t_A}^{t_L} \bm{X}\left( v(t) \right)  dt
+\label{eq:integrate}
+\end{equation}
+
+The speed profile is always expressed as two average speeds for two segments. The first segment $AB$ begins at the position of the AGV at transmission time $\bm{X}(s_A)$, and ends at the nearest edge of the intersection conflict zone $\bm{X}(s_B)$. The second segment $BC$ begins at $\bm{X}(s_B)$ and ends at the far edge of the intersection conflict zone $\bm{X}(s_C)$.  
+
+To represent this level of detail, the DualWaypoint contains four parameters $d =[t_B, t_C, s_B, s_C]$. These are independent of the discretization in the ApproachPlan, and expressed in path coordinates. The flow of messages over time is shown in Figure \ref{fig:dual_wp_message_sequence}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{dual_wp_message_sequence.eps}
+	\caption{Sequence diagram for two AGVs communicating with the Intersection Controller which sends a DualWaypoint message to every known AGV every $T$ seconds, considering the latest ApproachPlans it has received to date. }
+	\label{fig:dual_wp_message_sequence}
+\end{figure}
+
+
+\subsection{Longitudinal Speed Control}
+Longitudinal Speed Control for each Individual AGV is based on two main behaviours. The first one determines the speed on unconflicted links. The second one is required meet the timing specification contained in the Dual Waypoint message, subject to disturbances and uncertainty in the plant using position feedback.  
+
+Previous authors have modelled the speed on unconflicted links using car-following behaviour models. Automated traffic is assumed to follow an Adaptive Cruise Control Model with set headway, while human operated vehicles follow the Intelligent Driver Model in \cite{Baz2020}. In the AGV space it is common to simplify car-following with mutual exclusion of discretized roadmap segments  \cite{Digani2014coord} so we follow this scheme for the main results. Some results with mutual exclusion turned off are given in  in Section \ref{sec:fixed_arrival_pattern} before the main results with mutual exclusion in Section \ref{sec:mutex_arrival_pattern}. The update period $T_L=0.1$s must shorter or equal to that of the intersection controller $T$. 
+
+The Dual Waypoint Timing Specification is met with a constant acceleration model based on the collision-free operation modes in \cite{He2020}. 
+Our simulation incorporates two modes, depending on whether the vehicles position feedback $\bm{X}(\hat{s})$ at time $\hat{t}$ indicates it is approaching the conflict zone so $\hat{s}<s_B$ or already inside it so $s_B\leq s_A<s_C$. If the AGV has passed the conflict $\hat{s}>s_C$ then its speed is unconstrained from the perspective of this intersection controller. In the simulation exiting vehicles would accelerate to maximum speed, at $\alpha_{max}$.
+
+On approach to the conflict zone, where $\hat{s}<s_B$, the approach acceleration $\alpha_{AB}$ is given by Equation \ref{eq:approach}.
+\begin{equation}
+\alpha_{AB} = \frac{(s_B - \hat{s}) - \hat{u}(t_B - \hat{t}) }{0.5 (t_B - \hat{t})^2}
+\label{eq:approach}
+\end{equation}
+
+Within the conflict zone $s_B \leq s_A<s_C$ the acceleration $\alpha_{BC}$ is given by Equation \ref{eq:within}.
+\begin{equation}
+\alpha_{BC} = \frac{(s_C - \hat{s}) - \hat{u}(t_C - \hat{t}) }{0.5 (t_C - \hat{t})^2}
+\label{eq:within}
+\end{equation}
 
 \subsection{AGV Motor Dynamic and Electrical Model}
 For the dynamics, every AGV was assumed to have the same mass $M=100$kg whether loaded or unloaded, reflecting a negligible cargo mass, for example spare parts for mobile phone repair. An AGV may be propelled by brushless DC motors, which provide high torque and efficiency. Even so, a major source of power loss is internal resistance of the windings and magnetic losses in the core.  %This is captured in the equivalent circuit with one lumped resistor $R$ shown in Figure \ref{fig:dc_motor}. Suitable parameters for the equivalent circuit are shown in Table \ref{tab:params} and were found in a test of an electric bicycle \cite{Racewicz2018}.
@@ -93,53 +136,6 @@ F_a = C\rho A v^2
 
 A brushless DC motor for an industrial vehicle typically has a constant voltage from a battery pack \cite{Hyster2020a}. In this case we set $V_a=$72V, within the range tested in \cite{Racewicz2018}. Torque can be varied from zero to maximum by changing the slip angle between the magnetic field generated digitally by the three phase coils and the magnetic field generated by the hgh strength magnets fixed on  the rotor. The output of the vehicle's longitudinal speed controller must therefore be a duty cycle $-1.0<d<1.0$. A value of zero corresponds to zero torque, where the slip angle is zero, and a value of +/-1.0 to a slip angle of +/-90 degrees where torque is at a maximum in forward or reverse respectively.
 
-\subsection{Dual Waypoint Interface}
-\label{sec:dual_waypoint}
-The dual waypoint interface is designed to be decoupled from the algorithms for scheduling and routing as far as possible. In order to support decentralized routing with adaptive paths, each approaching vehicle must send an ApproachPlan message to containing a detailed plan for how it intends to cross the intersection.  The ApproachPlan contains four parameters $d =\left[ t_A, \bm{X}( s_A ), v_A, \bm{X}(s) \right]$. The plan consists of a transmission timestamp $t_A$, a measured position $\bm{X}(s_A)$, and speed $v_A$ at the given time and a sequence of feasible positions with no timing information, the path $\bm{X}(s)$. 
-
-Embedding the path in each request for guidance means that approaching AGV can use obstacle avoidance planning before they enter the approach lane, and still receive the correct speeds at the intersection. As a result the size and shape of the conflict zone is not fixed but depends on the current traffic situation and the approach plans received.
-
-The conflict zone shape is calculated by discretizing $\bm{X}(s)$ into linear segments of length $L=1$m and searching for points where the minimum distance between two segments exceeds the diameter of the AGV bounding circle, and the direction of the segment is different. This ensures there is no conflict point identified where one segment joins another, which arises when two AGV are following the same path one after the other.  
-
-The intersection controller is responsible for generating an optimal speed profile for this path $v(t)$, to create a trajectory which satisfies the collision avoidance constraints with the trajectories of all known approaching vehicles $\bm{\xi}_i(t) \forall i \in N$. 
-
-The trajectory across the intersection $\bm{\xi}(t)$ is found from the path $\bm{X}(s)$, the start time $t_A$ and start position $\bm{X}(s_A)$ using Equation \ref{eq:integrate}.
-\begin{equation}
-\bm{\xi}(t)  = \bm{X}(s_A) + \int_{t_A}^{t_L} \bm{X}\left( v(t) \right)  dt
-\label{eq:integrate}
-\end{equation}
-
-The speed profile is always expressed as two average speeds for two segments. The first segment $AB$ begins at the position of the AGV at transmission time $\bm{X}(s_A)$, and ends at the nearest edge of the intersection conflict zone $\bm{X}(s_B)$. The second segment $BC$ begins at $\bm{X}(s_B)$ and ends at the far edge of the intersection conflict zone $\bm{X}(s_C)$.  
-
-To represent this level of detail, the DualWaypoint contains four parameters $d =[t_B, t_C, s_B, s_C]$. These are independent of the discretization in the ApproachPlan, and expressed in path coordinates. The flow of messages over time is shown in Figure \ref{fig:dual_wp_message_sequence.}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.9\linewidth]{dual_wp_message_sequence.eps}
-	\caption{Sequence diagram for two AGVs communicating with the Intersection Controller which sends a DualWaypoint message to every known AGV every $T$ seconds, considering the latest ApproachPlans it has recieved to date. }
-	\label{fig:dual_wp_message_sequence}
-\end{figure}
-
-
-\subsection{Longitudinal Speed Control}
-Longitudinal Speed Control for each Individual AGV is based on two main behaviours. The first one determines the speed on unconflicted links. The second one is required meet the timing specification contained in the Dual Waypoint message, subject to disturbances and uncertainty in the plant using position feedback.  
-
-Previous authors have modelled the speed on unconflicted links using car-following behaviour models. Automated traffic is assumed to follow an Adaptive Cruise Control Model with set headway, while human operated vehicles follow the Intelligent Driver Model in \cite{Baz2020}. In the AGV space it is common to simplify car-following with mutual exclusion of discretized roadmap segments  \cite{Digani2014coord} so we follow this scheme for the main results. Some results with mutual exclusion turned off are given in  in Section \ref{sec:fixed_arrival_pattern} before the main results with mutual exclusion in Section \ref{sec:mutex_arrival_pattern}. The update period $T_L=0.1$s must shorter or equal to that of the intersection controller $T$. 
-
-The Dual Waypoint Timing Specification is met with a constant acceleration model based on the collision-free operation modes in \cite{He2020}. 
-Our simulation incorporates two modes, depending on whether the vehicles position feedback $\bm{X}(\hat{s})$ at time $\hat{t}$ indicates it is approaching the conflict zone so $\hat{s}<s_B$ or already inside it so $s_B\leq s_A<s_C$. If the AGV has passed the conflict $\hat{s}>s_C$ then its speed is unconstrained from the perspective of this intersection controller. In the simulation exiting vehicles would accelerate to maximum speed, at $\alpha_{max}$.
-
-On approach to the conflict zone, where $\hat{s}<s_B$, the approach acceleration $\alpha_{AB}$ is given by Equation \ref{eq:approach}.
-\begin{equation}
-\alpha_{AB} = \frac{(s_B - \hat{s}) - \hat{u}(t_B - \hat{t}) }{0.5 (t_B - \hat{t})^2}
-\label{eq:approach}
-\end{equation}
-
-Within the conflict zone $s_B \leq s_A<s_C$ the acceleration $\alpha_{BC}$ is given by Equation \ref{eq:within}.
-\begin{equation}
-\alpha_{BC} = \frac{(s_C - \hat{s}) - \hat{u}(t_C - \hat{t}) }{0.5 (t_C - \hat{t})^2}
-\label{eq:within}
-\end{equation}
 
 \section{Method}
 To examine control of variable numbers of vehicles, and comment on safety effects as well as performance of experimental algorithms utilizing a dynamic simulation test environment seemed prudent to start with. The goal here is to examine edge cases which are safety critical (may lead to a collision between AGV). The different algorithms will be compared based on execution time, total travel time, total energy consumption and mean throughput delay with a given traffic pattern.

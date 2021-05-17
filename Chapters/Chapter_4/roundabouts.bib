@@ -35,23 +35,6 @@ url = {https://doi.org/10.1016/j.ifacol.2018.07.013},
 volume = {51},
 year = {2018}
 }
-@article{Rios-Torres2017,
-abstract = {Connected and automated vehicles (CAVs) have the potential to improve safety by reducing and mitigating traffic accidents. They can also provide opportunities to reduce trans- portation energy consumption and emissions by improving traffic flow. Vehicle communication with traffic structures and traffic lights can allow individual vehicles to optimize their operation and account for unpredictable changes. This paper summarizes the developments and the research trends in coordination with the CAVs that have been reported in the literature to date. Remain- ing challenges and potential future research directions are also discussed.},
-author = {Rios-Torres, Jackeline and Malikopoulos, Andreas A.},
-doi = {10.1109/TITS.2016.2600504},
-file = {:C$\backslash$:/Users/Ed/OneDrive - University of Leeds/Literature Review/Cooperative Motion of Road Vehicles/Rios-Torres and Malikopoulos 2016 - Survey on CAV Coordination at Intersections and Merging at On-Ramps.pdf:pdf},
-issn = {15249050},
-journal = {IEEE Transactions on Intelligent Transportation Systems},
-keywords = {Connected and automated vehicles (CAVs),cooperative driving,intersection control,merging highways,vehicle coordination,vehicle-to-infrastructure (V2I) communication,vehicle-to-vehicle (V2V) communication},
-mendeley-groups = {Cooperative Motion of Road Vehicles,Intra-logistics AGV/UK-RAS Paper},
-number = {5},
-pages = {1066--1077},
-title = {{A Survey on the Coordination of Connected and Automated Vehicles at Intersections and Merging at Highway On-Ramps}},
-volume = {18},
-year = {2017}
-}
-
-
 
 @misc{ALEXISC.MADRIGAL,
 author = {{ALEXIS C. MADRIGAL}},
@@ -212,37 +195,12 @@ volume = {16},
 year = {2008}
 }
 
-@article{Schouwenaars2004,
-abstract = {This paper presents a framework for provably safe decentralized trajectory planning of multiple (autonomous) aircraft. Each aircraft plans its trajectory individually using a receding horizon strategy based on mixed integer linear programming (MILP). A con- strained, inertial, first-order linear model is used to capture the dynamics and kinematics of the vehicle. Safety is guaranteed by maintaining, at each time step, a dynamically feasible trajectory for each aircraft that terminates in a loiter pattern. Conflicts between multiple aircraft are resolved in a sequential, decentralized fashion, in which each aircraft takes into account the latest trajectory and loiter pattern of the other aircraft. Besides maintaining feasibility, if the problem is too complex to be solved within the time constraints of a real- time system, this approach also provides an a priori safe rescue solution consisting of the previous trajectories and individual loiter patterns. Several examples of conflict situations resolved by the proposed method are presented.},
-author = {Schouwenaars, Tom and How, Jonathan and Feron, Eric},
-doi = {10.2514/6.2004-5141},
-file = {:C$\backslash$:/Users/Ed/OneDrive - University of Leeds/Literature Review/Path Planning/Motion Planning/Mixed Integer/Schouwenaars 2004 - Decentralized Cooperative Trajectory Planning... AAIA .pdf:pdf},
-isbn = {978-1-62410-073-4},
-journal = {AIAA Guidance, Navigation, and Control Conference and Exhibit},
-mendeley-groups = {Planning/Motion Planning/Mixed Integer},
-number = {August},
-pmid = {18258209},
-title = {{Decentralized Cooperative Trajectory Planning of Multiple Aircraft with Hard Safety Guarantees}},
-url = {http://arc.aiaa.org/doi/10.2514/6.2004-5141},
-year = {2004}
-}
-
-@article{Levin2017,
-abstract = {Reservation-based intersection controls, in which vehicles reserve space-time paths through the intersection, have the potential to make greater use of intersection capacity than traffic signals. However, the efficiency of previous microsimulations of reservations has been severely limited by a protocol that requires vehicles to request reservations and the intersection manager to accept or reject them. We propose a new protocol, AIM∗, in which the intersection manager assigns reservations to vehicles, to greatly increase the optimization possibilities. Then, we present a mixed integer linear program for optimally choosing vehicle reservations under AIM∗. The formulation is similar to conflict resolution models for aviation, and ensures separation at all points that vehicles might intersect. We therefore present a rolling-horizon algorithm to extend the method to larger numbers of vehicles. Results show that the optimal reservation assignments from AIM∗ significantly reduce delays over previous protocols. Furthermore, the rolling horizon solutions have similar delays to a fixed horizon, thereby providing an efficient method of implementing AIM∗.},
-author = {Levin, Michael W. and Rey, David},
-doi = {10.1016/j.trc.2017.09.025},
-file = {:C$\backslash$:/Users/Ed/OneDrive - University of Leeds/Literature Review/Cooperative Motion of Road Vehicles/Levin and Rey 2017 - TRC - Conflict-point formulation of intersection control.pdf:pdf},
-issn = {0968090X},
-journal = {Transportation Research Part C: Emerging Technologies},
-keywords = {Autonomous vehicles,Collision avoidance,Conflict point,Intersection control,Reservation-based},
-mendeley-groups = {Cooperative Motion of Road Vehicles/Intersections},
-number = {January},
-pages = {528--547},
-publisher = {Elsevier},
-title = {{Conflict-point formulation of intersection control for autonomous vehicles}},
-url = {http://dx.doi.org/10.1016/j.trc.2017.09.025},
-volume = {85},
-year = {2017}
+@inproceedings{Schouwenaars2004,
+  title={Decentralized cooperative trajectory planning of multiple aircraft with hard safety guarantees},
+  author={Schouwenaars, Tom and How, Jonathan and Feron, Eric},
+  booktitle={AIAA Guidance, Navigation, and Control Conference and Exhibit},
+  pages={5141},
+  year={2004}
 }
 
 @article{Inalhan2002,
@@ -280,21 +238,190 @@ title = {{Trajectory generation for multiagent point-to-point transitions via di
 volume = {4},
 year = {2018}
 }
-@article{Dai2017,
-abstract = {The paper is concerned with the problem of distributed model predictive control (DMPC) for formation of multiple linear second-order agents with collision avoidance and obstacle avoidance. All the agents are permitted to implement optimization simultaneously at each time step. The assumed input trajectory and state trajectory are introduced to obtain a computationally tractable optimization problem in a distributed manner. As a result, a compatibility constraint is required to ensure the consistency between each agent׳s real operation and its plan and to establish the agreement among agents. The terminal ingredients are tailored by making use of the specific form of the system model and the control objective. The terminal set is ensured to be positively invariant with the designed terminal controller. The collision avoidance constraint and the obstacle avoidance constraint are satisfied for any state in the terminal set. The weighted matrix of the terminal cost is determined by solving a Lyapunov equation. Moreover, recursive feasibility of the resulting optimization problem is guaranteed and closed-loop stability of the whole system is ensured. Finally, a numerical example is given to illustrate the effectiveness of the proposed algorithm.},
-author = {Dai, Li and Cao, Qun and Xia, Yuanqing and Gao, Yulong},
-doi = {10.1016/j.jfranklin.2016.12.021},
-file = {:C$\backslash$:/Users/Ed/OneDrive - University of Leeds/Literature Review/Path Planning/Motion Planning/MPC/Dai and Cao and Xia and Gao 2016 - Mistributed MPC for formation of multi-agent systems with collision avoidance.pdf:pdf},
-issn = {00160032},
-journal = {Journal of the Franklin Institute},
-mendeley-groups = {Planning/Motion Planning/Model Predictive Control},
-number = {4},
-pages = {2068--2085},
+
+%%%references below concern the general growth and operation of logistics AGVs and the challenges therin
+
+
+
+@article{Mohammadi2020,
+abstract = {The present study proposes a simulation-based model of high degree flexible routing to prevent collisions and deadlocks in flexible manufacturing systems (FMSs). High degree flexible routing concurrently involves classical routing strategies (specifies the destination and static/dynamic routing between origin and destination) with routing flexibility (considers alternatives to select as destination). A new approach named Tandem-Queue-Link with a look-ahead (TQL-A) is proposed in which the look-ahead mechanism supports deadlock prevention. The TQL-A performs a collision-free status for automated guided vehicles (AGVs) routing with flexible dynamic strategy. The main contribution of the present study is to implement the routing flexible levels (RFLs) by dynamic flexible routing (DFR) as a high degree flexible routing strategy. The most efficient parameters of this highly complex FMS are designed using a multi-objective nonlinear programming model extracted from simulation metamodels based on different hypotheses. Results support some of the considered hypotheses and show the complicated relationship between different values of FMS design parameters and different levels of routing flexibility. Metamodel validity through a typical case study defines that the higher values of velocity and acceleration/deceleration can compensate the level of routing flexibility but other parameters that are influenced by the active parameter (i.e. those related to loading/unloading time) have not any sensible influence on the output.},
+author = {Mohammadi, Ehsan Karimi and Shirazi, Babak},
+doi = {10.1016/j.isatra.2019.06.024},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Mohammadi and Shirazi 2020 - Toward high degree flexible routing in collision-free FMSs through AGV dynamic strateg - a simulation metamodel.pdf:pdf},
+issn = {00190578},
+journal = {ISA Transactions},
+keywords = {AGV,Collision-free,Dynamic flexible routing,Routing flexible levels,Simulation metamodels},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews,Intra-logistics AGV/Conflict Free Routing},
+pages = {228--244},
 publisher = {Elsevier Ltd},
-title = {{Distributed MPC for formation of multi-agent systems with collision avoidance and obstacle avoidance}},
-url = {http://dx.doi.org/10.1016/j.jfranklin.2016.12.021},
-volume = {354},
-year = {2017}
+title = {{Toward high degree flexible routing in collision-free FMSs through automated guided vehicles' dynamic strategy: A simulation metamodel}},
+url = {https://doi.org/10.1016/j.isatra.2019.06.024},
+volume = {96},
+year = {2020}
 }
 
+@article{Fragapane2021,
+abstract = {Autonomous mobile robots (AMR) are currently being introduced in many intralogistics operations, like manufacturing, warehousing, cross-docks, terminals, and hospitals. Their advanced hardware and control software allow autonomous operations in dynamic environments. Compared to an automated guided vehicle (AGV) system in which a central unit takes control of scheduling, routing, and dispatching decisions for all AGVs, AMRs can communicate and negotiate independently with other resources like machines and systems and thus decentralize the decision-making process. Decentralized decision-making allows the system to react dynamically to changes in the system state and environment. These developments have influenced the traditional methods and decision-making processes for planning and control. This study identifies and classifies research related to the planning and control of AMRs in intralogistics. We provide an extended literature review that highlights how AMR technological advances affect planning and control decisions. We contribute to the literature by introducing an AMR planning and control framework to guide managers in the decision-making process, thereby supporting them to achieve optimal performance. Finally, we propose an agenda for future research within this field.},
+author = {Fragapane, Giuseppe and de Koster, Ren{\'{e}} and Sgarbossa, Fabio and Strandhagen, Jan Ola},
+doi = {10.1016/j.ejor.2021.01.019},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Fragapane et al 2021 - Planning and control of autonomous mobile robots for intralogistics.pdf:pdf},
+issn = {03772217},
+journal = {European Journal of Operational Research},
+keywords = {Autonomous mobile robots,Literature review,Logistics,Planning and control,Research agenda},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+publisher = {Elsevier B.V.},
+title = {{Planning and control of autonomous mobile robots for intralogistics: Literature review and research agenda}},
+url = {https://doi.org/10.1016/j.ejor.2021.01.019},
+year = {2021}
+}
+
+@article{Benzidia2019,
+abstract = {{\textcopyright} 2018, {\textcopyright} 2018 Informa UK Limited, trading as Taylor  &  Francis Group. In France, as in numerous countries, healthcare organisations are undergoing major transformations, leading them to rationalise their resources and optimize their flows. In this context, automation can play an important role, enabling value creation and patient satisfaction. Previous research has mainly focused on the technological aspects of automation, neglecting the organisational issues related to the implementation of this innovation and particularly the management of the hospital staff, including logistics personnel, involved within the organisational change process. The aim of this article is, at least, to partly address this gap within the literature, and to propose, based on an exploratory case study, an analysis grid of the challenges and changes in terms of logistics flows (pharmaceutical, waste, laundry, etc.) that impact staff involved in managing these flows in a hospital context. Our results highlight the importance and necessity of anticipating the building and deployment of new knowledge and skills in order to efficiently and effectively design and manage automated logistics flows with AGV system.},
+author = {Benzidia, Smail and Ageron, Blandine and Bentahar, Omar and Husson, Julien},
+doi = {10.1080/13675567.2018.1518414},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Vehicle Routing Problem/AGV routing/Benzidia 2019 - automation and AGV in healthcare logistics a case study based approach.pdf:pdf},
+issn = {1469848X},
+journal = {International Journal of Logistics Research and Applications},
+keywords = {AGV,Logistics,automation,exploratory case study,healthcare organisation},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+number = {3},
+pages = {273--293},
+publisher = {Taylor & Francis},
+title = {{Investigating automation and AGV in healthcare logistics: a case study based approach}},
+volume = {22},
+year = {2019}
+}
+
+@article{Papa2018,
+abstract = {Recent progress in mobile robotics paves the way of their usage in industrial environments. Nevertheless, they are currently no standards, which provide safety regulation in these environments for autonomous mobile robots. In this paper, three different safety concepts for mobile robots will be discussed, whereby the safe usage of a mobile robot in an industrial setting should be ensured. The first concept contains a safety ring, which allows the mobile robot to use probabilistic robotics in combination with a robust obstacle avoidance and safe hazard detection. Further, the second concept treats safe navigation without probabilistic robotics. The priority hereby lies on the self-localisation with reliable sensor methods. And in the third concept, an aware environment with object detection and tracking is shown. Virtual sensors in form of wireless sensor networks placed in the factory replace the need of physical sensors on mobile robots. The outline of this work is a theoretical comparison of these three safety concepts in consideration of their specific properties and their recommended usage for different scenarios.},
+author = {Papa, Maximilian and Kaselautzke, David and Stuja, Kemajl and W{\"{o}}lfel, Walter},
+doi = {10.2507/29th.daaam.proceedings.115},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Papa et al 2018 - Safety Concepts for Mobile Robots in Industrial Environments.pdf:pdf},
+isbn = {9783902734204},
+issn = {17269679},
+journal = {Annals of DAAAM and Proceedings of the International DAAAM Symposium},
+keywords = {Aware environment,Mobile robot,Safe navigation,Safe sensors,Safety ring},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+number = {1},
+pages = {791--800},
+title = {{Different safety certifiable concepts for mobile robots in industrial environments}},
+volume = {29},
+year = {2018}
+}
+
+@article{Barenji2019,
+abstract = {This paper proposes a hybrid agent-based approach for the scheduling and synchronization of e-commerce logistics parks (EcLP). This is accomplished by integrating intelligent distribution centers within the e-commerce environment. The proposed platform has been developed based on an agent technology, which not only serves for decentralization and synchronization purposes but also it has been optimized for the transportation and logistics of the overall system. Moreover, mobile agent-based communication mechanisms between the hardware agents and the software agents were developed, and the proposed hybrid agent-based platform was implemented and tested based on a case study. Following this, the results were compared to a conventional system based on four main indicators.},
+author = {Barenji, Ali Vatankhah and Wang, W. M. and Li, Zhi and Guerra-Zubiaga, David A.},
+doi = {10.1016/j.tre.2019.04.002},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Barenji et al 2019 - Intelligent e-commerce logistics platform using hybrid agent based approach.pdf:pdf},
+issn = {13665545},
+journal = {Transportation Research Part E: Logistics and Transportation Review},
+keywords = {And control,E-commerce,E-commerce logistic park,Multi-agent system,Online to offline,Scheduling},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+number = {May 2018},
+pages = {15--31},
+publisher = {Elsevier},
+title = {{Intelligent E-commerce logistics platform using hybrid agent based approach}},
+url = {https://doi.org/10.1016/j.tre.2019.04.002},
+volume = {126},
+year = {2019}
+}
+
+@article{Furmans2018,
+author = {Furmans, Kai and Gue, Kevin},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Furmans and Gue 2018 -A Framework for Modeling Material Handling with Decentralized Con.pdf:pdf},
+journal = {Progress in Material Handling Research},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+pages = {2018},
+title = {{A Framework for Modeling Material Handling with Decentralized Control}},
+url = {https://digitalcommons.georgiasouthern.edu/pmhr_2018/23},
+year = {2018}
+}
+
+@article{Sykes2018,
+author = {Sykes, Daniel and Keighren, Gavin},
+doi = {10.1145/3196558.3196563},
+file = {:C\:/Users/Ed/AppData/Local/Mendeley Ltd./Mendeley Desktop/Downloaded/Sykes, Keighren - 2018 - Industrial-scale environments with bounded uncertainty.pdf:pdf},
+isbn = {9781450357609},
+journal = {2018 IEEE/ACM 1st International Workshop on Robotics Software Engineering (RoSE)},
+keywords = {2018,acm reference format,bounded uncertainty,daniel sykes and gavin,industrial-scale environments,keighren,planning,redundancy,resilience},
+mendeley-groups = {Intra-logistics AGV,Intra-logistics AGV/AGV Reviews,Intra-logistics AGV/AVS/RS - On Rails},
+pages = {29--32},
+publisher = {ACM},
+title = {{Industrial-scale environments with bounded uncertainty}},
+year = {2018}
+}
+
+@article{Qi2018,
+abstract = {An automated guided vehicle system (AGVS) is an advanced material handling system widely used in various automated systems, particularly in e-commerce warehouses. The warehouse operation performance, mainly focusing on transportation efficiency, is affected by many factors, such as traffic-control policies and warehouse layouts. Based on the digraph theory and real-time control, two effective traffic-control policies with polynomial-time complexity are proposed to avoid the collision and to solve deadlocks. To accommodate more complicated situations, different types of warehouse layouts are tested. Extensive simulations are carried out to study the effects of policies, warehouse layouts, task densities and timing of an AGV to apply for a resource on the evaluation of the AGVS-based warehouse operation performance, which provide guidelines for warehouse designers.},
+author = {Qi, Mingyao and Li, Xiaowen and Yan, Xuejun and Zhang, Canrong},
+doi = {10.1016/j.simpat.2018.07.015},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Mingyao and Xiaowen and Xuejun and Canrong 2018 - On the evaluation of AGVS-based warehouse operation performance.pdf:pdf},
+issn = {1569190X},
+journal = {Simulation Modelling Practice and Theory},
+keywords = {AGVS,Deadlock,E-commerce warehouse,Simulation},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+number = {April},
+pages = {379--394},
+publisher = {Elsevier},
+title = {{On the evaluation of AGVS-based warehouse operation performance}},
+url = {https://doi.org/10.1016/j.simpat.2018.07.015},
+volume = {87},
+year = {2018}
+}
+
+@article{Meller2018,
+author = {Meller, Russel and Nazzal, Dima and Thomas, Lisa M.},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Meller and Nazal and Thomas 2018 - Collaborative Bots in Distribution Centers.pdf:pdf},
+journal = {Savannah, Imhrc Proceedings},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+title = {{Collaborative Bots in Distribution Centers}},
+year = {2018}
+}
+
+@article{Mehami2018,
+abstract = {Industry 4.0 is the next step for the manufacturing industry by adding internet technologies to optimized automation system. This paper demonstrates automated guided vehicles (AGVs) in a real factory scenario which utilized radio frequency identification (RFID) tags for identification and motion control purposes. The AGVs were tested in a real factory scenario, focusing mainly on two types of AGVs, Karl and Jimmy. They were equipped with RFID readers to detect tags placed on the ground or inside objects. The internal logistics of a smart factory's manufacturing environment were demonstrated using the two types of AGVs. It highlighted three aspects which are seldom talked about in order to effectively implement a smart AGV system: reconfigurability, flexibility, and customizability.},
+author = {Mehami, Jasprabhjit and Nawi, Mauludin and Zhong, Ray Y.},
+doi = {10.1016/j.promfg.2018.07.144},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Mehami 2018 - Smart automated guided ehicles for manufacturing 4.0.pdf:pdf},
+issn = {23519789},
+journal = {Procedia Manufacturing},
+keywords = {AGV,Industry 4.0,RFID,Smart Factory},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+pages = {1077--1086},
+publisher = {Elsevier B.V.},
+title = {{Smart automated guided vehicles for manufacturing in the context of Industry 4.0}},
+url = {https://doi.org/10.1016/j.promfg.2018.07.144},
+volume = {26},
+year = {2018}
+}
+
+@article{Azadeh2019,
+abstract = {Robotic handling systems are increasingly applied in distribution centers. The require little space, provide flexibility in managing varying demand requirements, and are able to work 24/7. This makes them particularly fit for e-commerce operations. This paper reviews new categories of automated and robotic handling systems, such as shuttle-based storage and retrieval systems, shuttle-based compact storage systems, and robotic mobile fulfillment systems. For each system, we categorize the literature in three groups: system analysis, design optimization, and operations planning and control. Our focus is to identify the research issue and operations research modeling methodology adopted to analyze the problem. We find that many new robotic systems and applications have hardly been studied in academic literature, despite their increasing use in practice. Because of unique system features (such as autonomous control, flexible layout, networked and dynamic operation), new models and methods are needed to address the design and operational control challenges for such systems, in particular, for the integration of subsystems. Integrated robotic warehouse systems will form the next category of warehouses. All vital warehouse design, planning, and control logic, such as methods to design layout, storage and order-picking system selection, storage slotting, order batching, picker routing, and picker to order assignment, will have to be revisited for new robotized warehouses.},
+author = {Azadeh, Kaveh and {De Koster}, Ren{\'{e}} and Roy, Debjit},
+doi = {10.1287/trsc.2018.0873},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Intra-logistics AGV/AGV Reviews/Azadeh and De Koster and Roy 2019 - Robotized and Automated Warehouse Systems review.pdf:pdf},
+issn = {15265447},
+journal = {Transportation Science},
+keywords = {Control,Planning,Robotic systems,Warehousing},
+mendeley-groups = {Intra-logistics AGV/AGV Reviews},
+number = {4},
+pages = {917--945},
+title = {{Robotized and automated warehouse systems: Review and recent developments}},
+volume = {53},
+year = {2019}
+}
+
+@article{Dresner2004,
+abstract = {Traffic congestion is one of the leading causes of lost productivity and decreased standard of living in urban settings. Recent advances in artificial intelligence suggest vehicle navigation by autonomous agents will be possible in the near future. In this paper, we propose a reservation-based system for alleviating traffic congestion, specifically at intersections, and under the assumption that the cars are controlled by agents. First, we describe a custom simulator that we have created to measure the different delays associated with conducting traffic through an intersection. Second, we specify a precise metric for evaluating the quality of traffic control at an intersection. Using this simulator and this metric, we show that our reservation-based system can perform two to three hundred times better than traffic lights. As a result, it can smoothly handle much heavier traffic conditions. We show that our system very closely approximates an overpass, which is the optimal solution for the problem with which we are dealing.},
+author = {Dresner, Kurt and Stone, Peter},
+file = {:C\:/Users/Ed/OneDrive - University of Leeds/Literature Review/Cooperative Motion of Road Vehicles/Dresner and stone 2004 - Multiagent_traffic_management_A_reservat.pdf:pdf},
+isbn = {1581138644},
+journal = {Proceedings of the Third International Joint Conference on Autonomous Agents and Multiagent Systems, AAMAS 2004},
+mendeley-groups = {Cooperative Motion of Road Vehicles},
+pages = {530--537},
+title = {{Multiagent traffic management: A reservation-based intersection control mechanism}},
+volume = {2},
+year = {2004}
+}
 

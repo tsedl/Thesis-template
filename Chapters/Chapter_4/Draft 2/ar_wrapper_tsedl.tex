@@ -107,7 +107,18 @@ subject classification numbers as needed.
 
 \end{@twocolumnfalse}
 ]
+\section{Introduction}
 
+Reservation-based intersection management for preventing collisions between autonomous vehicles at intersections by V2V communication has been the topic of numerous studies considering road traffic. A good review is \cite{Chen2016}. Another review focusing on optimization methods is \cite{Malikopoulos2018}. Some early studies utilized a First-Come-First-Served (FCFS) policy which was shown to outperform signal control in some situations \cite{Dresner2008}. Problematic cases where performance could be worse than signal control were identified by \cite{Levin2016}. To capture the potential capacity improvements other works have used convex optimization \cite{Dai2017}.
+The problem can also be posed as a mixed-integer optimization considering both the approach speed the arrival order as in \cite{Levin2017}.  
+In \cite{Digani2019}, Digani et al present a per-intersection controller which calculates segment speeds for all approaching vehicles to minimize the total crossing time. They show that the reduction in crossing delay is far more than the increase in computation time for a realistic six way intersection, compared to a state-of-the-art decentralized approach. Like many existing studies of AGV co-ordination it is assumed that only one AGV at a time may be present on each path segment.
+%
+%    
+%    
+%\section{Literature Review}
+%...
+\input{../IntersectionCore/ic_lit_review}
+%\section method + first results
 \input{../IntersectionCore/intersection_control}
 %\section{} ....
   
@@ -130,7 +141,7 @@ subject classification numbers as needed.
 \bibliographystyle{spbasic}      % basic style, author-year citations - Figure out why citation author lists dont fit in the columns 
 %\bibliographystyle{spmpsci}      % mathematics and physical sciences
 %\bibliographystyle{spphys}       % APS-like style for physics
-\bibliography{ar_references}   % name your BibTeX data base
+\bibliography{ ar_references, ../roundabouts}   % name your BibTeX data base
 
 %% Non-BibTeX users please use
 %\begin{thebibliography}{}
