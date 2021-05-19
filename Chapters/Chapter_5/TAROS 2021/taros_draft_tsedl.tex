@@ -14,8 +14,9 @@
 
 \begin{document}
 %
-\title{Site-Wide Motion Co-ordination for a Fleet of Autonomous Vehicles by Coupling Intersection Control Zones %with Car-Following Constraints 
-\thanks{Supported by the Engineering and Physical Sciences Research Council  through a full time Doctoral Training Partnership Studentship - Institute for Transport Studies and in a Combined Award in Science and Engineering partnership with Guidance Automation Limited. }}
+\title{Corridor Coupling Between Intersection Management Zones for Site-Wide Motion Co-ordination for a Fleet of Autonomous Vehicles  
+\thanks{Supported by the Engineering and Physical Sciences Research Council  through a full time Doctoral Training Partnership Studentship - Institute for Transport Studies and in a Combined Award in Science and Engineering partnership with Guidance Automation Limited. 
+EPSRC Project Reference 2383174. }}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -66,13 +67,25 @@ A fully decentralized and complete solution for controlling a fleet of autonomou
 
 One drawback of decentralized methods comes from the time spent negotiating at each intersection. Experiments show an average negotiation time of several seconds, and a number of conflicts increase with the number of vehicles \cite{Draganjac2020}. Reducing the number of negotiations is the motivation for the intersection control based solution described by Digani et al \cite{Digani2019}. The test environment used fixed guide paths, but modern AMR resemble autonomous vehicles which may one day operate on public roads, for which Autonomous Intersection Management has been well studied. 
 
-Research in to AIM for near future Autonomous Vehicles a hot topic in transport research, a recent review is given by Zhong et al \cite{Zhong2020}. This includes a summary table of approaches, which indicates there little attention has been given to the corridor coordination layer.  One of the few works addressing interactions between intersection zones is \cite{Du2018} which uses a 3-layer hierarchy where the manager of each intersection sends the average traffic density to its neighbours, chooses speeds within its zone of influence to minimize deviation from average road velocity, subject to the constraint that conflicts are avoided in the single zone spanning the intersection. %The lowest layer is the Fast Model Predictive Control used by the vehicle to track the reference velocity. The approach is tested in a simulation where the speed on each segment is a linear function of the traffic density. Speed deviations are reduced due to the sharing of Intersection-to-Intersection messaging which prevents large speed changes on the transition between Intersection Managers and leads to lower fuel consumption on a small test map with three lanes and two intersections. The car park inserted between the two intersections is used to stimulate interesting traffic situations.
-With the AIM messages interface from \cite{Levin2017} the car-following constraints are a potential mechanism for implementing ``corridor coordination'' . Other works have investigated the car-following behaviour \cite{Bichiou2019} using the RPA model, which accounts for vehicle dynamic limitations. This may make it a suitable replacement for the  policy used by \cite{Draganjac2020} where  a following vehicle must wait unitl the leader has completely vacated a private zone before the follower may progress. This behaviour is convenient because it extends safely to crossing traffic without modification. Using AIM to guarantee intersection safety, there is an opportunity to improve throughput by following more closely. 
+Car-following conflicts are resolved by the centralized routing algorithm in the reference `Full-Control' Fleet Adapter available within the Open Source Robotic Foundation's Robotic Middleware Framework (RMF) as of May 2021 cite{Vijay2021}. This is consistent with wider industry practice for roadmap-based systems reported in \cite{Fragapane2021}. Another notable adapter is the MiR 100 Fleet adapter, which 
+
+With roadmap-reservation based collision avoidance, the following vehicle must wait until the leader has completely vacated a private zone before the follower may progress. This behaviour is convenient because it extends safely to crossing traffic without modification. The concept is simple and offers flexibility as the size of the private zone can be tuned to achieve closer spacing where desired, for example in \cite{Walenta2017} there are two zone sizes depending on whether the direction of travel is the same or not. This is a good approximation to car-following, and notable for its decentralized design too. A follow up study to investigate the added messaging overhead and potential for negotiation delay, notwithstanding, this solution could offer throughput advantages.
+
+Research in to AIM for near future Autonomous Vehicles offers an alternative vision for collision avoidance, seemingly suitable to the most recent AMR, with a high level of autonomy. A recent review is given by Zhong et al \cite{Zhong2020}. In the AIM literature it is unusual to consider car-following conflicts, perhaps because autonomous vehicles suitable for operation on public roads are assumed to execute this function using their own sensors, perhaps in a similar way to the Adaptive Cruise Control assistance feature available in many production vehicles. Even so, the impact of interactions between vehicles are likely to be important to ensure the safe operation across the intersection. For example, even smart AMR who can overtake a lead vehicle if the AIM requests a different arrival order may well take longer to arrive, traverse a different path, or even be completely prevented from doing so by opposing traffic or vary narrow aisles. 
+
+Zhong et al \cite{Zhong2020} includes a summary table of AIM approaches, which indicates that little attention has been given to the corridor coordination layer.  One of the few works addressing interactions between intersection zones is \cite{Du2018} which uses a 3-layer hierarchy where the manager of each intersection sends the average traffic density to its neighbours, chooses speeds within its zone of influence to minimize deviation from average road velocity, subject to the constraint that conflicts are avoided in the single zone spanning the intersection. 
+
+With the AIM messages interface from \cite{Levin2017} the car-following constraints are a potential mechanism for implementing ``corridor coordination'' . Other works have investigated the car-following behaviour \cite{Bichiou2019} using the RPA model, which accounts for vehicle dynamic limitations. 
+
+
+
+Using AIM to guarantee intersection safety, there is an opportunity to improve throughput by following more closely. 
  
 The remaining research questions of interest to improve decentralized control of mobile robot fleets are:\\
-1. What algorithm for intersection management guarantees timely correct solutions to the conflict resolution task?\\
-2. What are the stability properties of such a system? Deadlocks and Live-locks?\\
-3.What performance improvement can be achieved with the combination of intersection management and car-following on corridors?
+1.  What are the performance implications of a conflict avoidance scheme based on platooning and AIM? \\
+2. What are the implication for Stability/Correctness corridor coordination is used to extend this across a whole site?
+3.  Which is preferable in high traffic situations?\\
+
 
 
 
