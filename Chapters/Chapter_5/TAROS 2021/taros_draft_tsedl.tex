@@ -15,11 +15,11 @@
 
 \begin{document}
 %
-\title{Corridor Coupling Between Intersection Management Zones for Site-Wide Motion Co-ordination for a Fleet of Autonomous Vehicles  
+\title{Corridor Coupling Between Intersection Management Zones for Site-Wide Motion Co-ordination of an Autonomous Vehicle Fleet   
 \thanks{Supported by the Engineering and Physical Sciences Research Council through a full time Doctoral Training Partnership Studentship - Institute for Transport Studies - EPSRC Project Reference 2383174 and in a Combined Award in Science and Engineering partnership with Guidance Automation Limited. 
  }}
 %
-%\titlerunning{Abbreviated paper title}
+\titlerunning{Corridor Coupling Between Intersection Management Zones}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
@@ -68,7 +68,7 @@ A fully decentralized and complete solution for controlling a fleet of autonomou
 
 One drawback of decentralized methods comes from the time spent negotiating at each intersection. Experiments show an average negotiation time of several seconds, and a number of conflicts increase with the number of vehicles \cite{Draganjac2020}. Reducing the number of negotiations is the motivation for the intersection control based solution described by Digani et al \cite{Digani2019}. The test environment used fixed guide paths, but modern AMR resemble autonomous vehicles which may one day operate on public roads, for which Autonomous Intersection Management has been well studied. 
 
-Car-following conflicts are resolved by the centralized routing algorithm in the reference `Full-Control' Fleet Adapter available within the Open Source Robotic Foundation's Robotic Middleware Framework (RMF) as of May 2021 cite{Vijay2021}. This is consistent with wider industry practice for roadmap-based systems reported in \cite{Fragapane2021}. Another notable adapter is the MiR 100 Fleet adapter, which is used to control a fleet of  MiR100 AMRs, currently in operation at an Airbus wing factory amongst other sites. The degree of autonomy is sufficiently high that a highway code has been proposed to govern the motion \cite{Liaqat2019}. The adapter appears to be a thin wrapper around the default RMF Fleet Adapter Python library, and chiefly serves to translate the DDS messages used in ROS2 \cite{Eros2019} to the bespoke REST interface used by the MiR100 Robots \cite{Grey2021}. For this reason it is likely to be roadmap-based with a centralized controller capable of conflict-free routing with a modified A* algorithm. The observations reported in \cite{Liaqat2019} corroborate this suggestion, at least at the time of writing.
+Car-following conflicts are resolved by the centralized routing algorithm in the reference `Full-Control' Fleet Adapter available within the Open Source Robotic Foundation's Robotic Middleware Framework (RMF) as of May 2021 \cite{Vijay2021}. This is consistent with wider industry practice for roadmap-based systems reported in \cite{Fragapane2021}. Another notable adapter is the MiR 100 Fleet adapter, which is used to control a fleet of  MiR100 AMRs, currently in operation at an Airbus wing factory amongst other sites. The degree of autonomy is sufficiently high that a highway code has been proposed to govern the motion \cite{Liaqat2019}. The adapter appears to be a thin wrapper around the default RMF Fleet Adapter Python library, and chiefly serves to translate the DDS messages used in ROS2 \cite{Eros2019} to the bespoke REST interface used by the MiR100 Robots \cite{Grey2021}. For this reason it is likely to be roadmap-based with a centralized controller capable of conflict-free routing with a modified A* algorithm. Reported fleet behaviour seem to corroborate this suggestion, at least in the 2019 release \cite{Liaqat2019}.
 
 With roadmap-reservation based collision avoidance, the following vehicle must wait until the leader has completely vacated a private zone before the follower may progress. This behaviour is convenient because it extends safely to crossing traffic without modification. The concept is simple and offers flexibility as the size of the private zone can be tuned to achieve closer spacing where desired, for example in \cite{Walenta2017} there are two zone sizes depending on whether the direction of travel is the same or not. This is a good approximation to car-following, and notable for its decentralized design too. A follow up study to investigate the added messaging overhead and potential for negotiation delay, notwithstanding, this solution could offer throughput advantages.
 
@@ -76,19 +76,17 @@ Research in to AIM for near future Autonomous Vehicles offers an alternative vis
 
 Zhong et al \cite{Zhong2020} includes a summary table of AIM approaches, which indicates that little attention has been given to the corridor coordination layer.  One of the few works addressing interactions between intersection zones is \cite{Du2018} which uses a 3-layer hierarchy where the manager of each intersection sends the average traffic density to its neighbours, chooses speeds within its zone of influence to minimize deviation from average road velocity, subject to the constraint that conflicts are avoided in the single zone spanning the intersection. 
 
-The AIM* interface is described in \cite{Levin2017} for an isolated intersection. It is broadly similar to the interface for quadratic programming formulation for industrial robots described by Digani et al \cite{Digani2019}. Digani indicate how multiple intersection zones can be coupled to span an entire roadmap, by identifying every place where two lanes intersect in the roadmap, and grouping those close together into an intersection zone, under the authority of a single Intersection Manager process. The intersection manager only has authority over approaching vehicles, those within the intersection and departing can no longer be controlled, but their state is used as a constraint on the following vehicles. 
+The AIM* interface is described in \cite{Levin2017} for an isolated intersection. The interface for quadratic programming formulation for industrial robots described by Digani et al \cite{Digani2019} is similar.In this work multiple intersection zones are coupled to span the entire roadmap. Every place where two lanes intersect in the roadmap is identified and nearby elementary conflicts are collected into an conflict zone. The intersection manager for one zone only has authority over approaching vehicles, those within the intersection and departing can no longer be controlled, but their state is used as a constraint on the following vehicles. 
 
-A vehicle departing one intersection is by definition approaching the next one, as soon as communication with the next Intersection MAnager can be estabilshed. As the speed of a departing vehicle is set by the next Intersection Manager, and the position of that vehicle forms a constraint on the solution to the speed of approaching vehicle scomputed by the previous intersection it could be argued that car-following behaviour is the fundamental mechanism for coupling intersection zones. Car-following in \cite{Digani2019} is based on roadmap reservation, reflecting the state of practice in industrial robotics. This leads to constraints that one vehicle cannot enter a roadmap segment, until the preceeding one has departed. Provided the segments chosen are long enough, this provides guaranteed safe behaviour. In many cases it will be overly conservative, especially when one vehicle is following another at a similar speed. As both are in motion, in the same direction they can follow each other much closer than the braking distance either vehicle would need to stop for a stationary obstacle.
+A vehicle departing one intersection is by definition approaching the next one, and new speeds instructions should be received as soon as communication with the next Intersection Manager can be established. As the speed of a departing vehicle is set by the next Intersection Manager, and the position of that vehicle forms a constraint on the solution to the speed of approaching vehicles computed by the previous intersection it could be argued that car-following behaviour is the fundamental mechanism for coupling intersection zones. Car-following in \cite{Digani2019} is based on roadmap reservation, reflecting the state of practice in industrial robotics. This leads to constraints that one vehicle cannot enter a roadmap segment, until the preceding one has departed. Provided the segments chosen are long enough, this provides guaranteed safe behaviour. In many cases it will be overly conservative, especially when one vehicle is following another at a similar speed. As both are in motion, in the same direction they can follow each other much closer than the braking distance either vehicle would need to stop for a stationary obstacle.
 
-   Many constraints could be used for implementing ``corridor coordination'' . Other works have investigated the car-following behaviour \cite{Bichiou2019} using the RPA model, which accounts for vehicle dynamic limitations. 
+Other works have investigated the car-following behaviour \cite{Bichiou2019} using the RPA model, which accounts for vehicle dynamic limitations. Only an isolated intersection is modelled, but if it were used for Corridor Co-ordination it should be less conservative than roadmap reservation. The guarantees of correct behaviour need to be considered carefully as they could break down in some situations, such as those examined by \cite{Du2020}.
 
 
-Using AIM to guarantee intersection safety, there is an opportunity to improve throughput by following more closely. 
- 
-The remaining research questions of interest to improve decentralized control of mobile robot fleets are:\\
+Using AIM to guarantee intersection safety, there is an opportunity to improve throughput by following more closely. The remaining research questions of interest to improve decentralized control of mobile robot fleets are:\\
 1.  What are the performance implications of a conflict avoidance scheme based on platooning and AIM? \\
-2. What are the implication for Stability/Correctness corridor coordination is used to extend this across a whole site?
-3.  Which is preferable in high traffic situations?\\
+2. What are the implication for Stability/Correctness corridor coordination is used to extend this across a whole site? \\
+3.  What is the impact on makespan in high traffic?\\
 
 
 
@@ -100,7 +98,16 @@ The remaining research questions of interest to improve decentralized control of
 
 
 \section{Method}
-\section{Simulation Results}
+As the conflict resolution is a safety critical function of an AGV fleet we need high confidence that it will perform correctly in all foreseeable situations, and shows some befit to performance before it is worth testing with hardware in the loop. The Robot Operating System library and associated Gazebo rigid body dynamic simulator are open source tools specifically designed to reduce the gap between numerical simulation and hardware tests. There is also a wide variety of open source software components which represent the state of practice and in some cases the state of the art. 
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.7\linewidth]{ros2_fleet_options.eps}}
+\caption{Different combinations of software packages to solve the Fleet Scheduling, and Conflict Free Routing problem. Bespoke implementations are marked with an asterisk. The selected stacks for comparison, labelled RR and AIM are enclosed in dashed boxes.}
+\label{fig:ros2_fleet_options}
+\end{figure}
+We have identified several combinations of packages which would be sufficient to control a fleet of 50 AMR in a dynamic simulation of a warehouse environment, to complete a list of 500 movement tasks in a fixed order. There were several possible combinations as shown in Figure \ref{fig:ros2_fleet_options}. The tasks consist of a pick location and a drop location within the roadmap, which is known a priori. Each task can be be completed by any AMR. The load capacity is one unit, and all items take up one unit space, so there is no opportunity for tour planning, carrying out multiple picks before a drop. All AMR begin in random locations, in the empty state and never leave the simulation at any time.  
+
+  
+\section{Numerical Simulation Results}
 \section{Concluding Remarks and Further Work}  
 %\subsubsection{Sample Heading (Third Level)} Only two levels of
 %headings should be numbered. Lower level headings remain unnumbered;
