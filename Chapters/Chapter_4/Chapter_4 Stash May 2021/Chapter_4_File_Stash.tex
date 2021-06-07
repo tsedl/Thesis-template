@@ -1,6 +1,28 @@
 
+%%%%% <standalone preamble
+\documentclass[]{article}
+
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{amsfonts} %for mathbb?
+\usepackage{amsmath} 
+%\usepackage{caption}
+
+\graphicspath{{./Chapter_4_Fig/}}
+%%%%%% />
 %=== Chapter Four ===
-\chapter{Intersection Control for Automated Vehicles }
+%\chapter{Intersection Control for Automated Vehicles }
+
+%%%%% </standalone preamble> 
+\title{Intersection Control for Automated Vehicles }
+\author{Edward Lambert}
+\begin{document}
+\maketitle
+\begin{abstract}
+\end{abstract}
+%%%%% <standalone preamble/>
+
+
 \section{Introduction}
 The capacity and safety of an intersection can be considered in terms of the number and type of conflict points which it contains. When every entrance to the intersection is connected to every exit by a smooth arc, a conflict point exists wherever two arcs intersect. They can be classified as head-on, following, crossing, diverging or merging. In many studies these points are assumed to be fixed, and only speed of the vehicles which controls the rate of progress along the arcs is varied to minimise delay. 
 
@@ -539,7 +561,7 @@ The use of an approach speeds minimising total travel time increases the energy 
 
 \begin{figure}
 	\includegraphics[width=1.0\linewidth]{agv_e_021088_power_-FIFO-HighLatency-HighTraffic-recalc.eps}
-	\caption{The electric power was recalculated from the logged value of armature current $i^2$R with a resistance of R=0.001$\omega$. The mechanical power weas recaluclated using the abs(motive\_force*velocity).}
+	\caption{The electric power was recalculated from the logged value of armature current $i^2$R with a resistance of R=0.001$\omega$. The mechanical power was recalculated using the abs(motive\_force*velocity).}
 	\label{fig:recalc_021088power}       % Give a unique label
 \end{figure}
 
@@ -553,3 +575,9 @@ The use of an approach speeds minimising total travel time increases the energy 
 	\caption{The power dissipated over time for all AGVs in total under Semaphore control.}
 	\label{fig:semaphore_power_sum}       % Give a unique label
 \end{figure}
+
+\bibliographystyle{unsrt}      % basic style, author-year citations - Figure out why citation author lists dont fit in the columns 
+
+\bibliography{roundabouts}   % name your BibTeX data base
+
+\end{document}
