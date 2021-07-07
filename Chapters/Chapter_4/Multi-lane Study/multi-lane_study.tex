@@ -61,7 +61,7 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-The wider motion coordination problem faced by fleets of identical material transfer AGVs is described in Problem \ref{prob1}. AGVs are used to complete missions at different locations in a network of connected paths. Using the 2-level decomposition of \cite{Digani2015}, Problem \ref{prob1} can be broken down into a high level zone capacitated routing problem and a local coordination sub problem within each zone. Autonomous Intersection Management (AIM) is one approach to solving the local coordination sub problem.
+The wider motion coordination problem faced by fleets of identical material transfer AGVs is described in Problem \ref{prob1}. AGVs are used to complete missions at different locations in a network of connected paths. Using the 2-level decomposition of Digani et al \cite{Digani2015}, Problem \ref{prob1} can be broken down into a high level zone capacitated routing problem and a local coordination sub problem within each zone. Autonomous Intersection Management (AIM) is one approach to solving the local coordination sub problem.
 
 \paragraph{Problem 1}
 \label{prob1}
@@ -81,19 +81,24 @@ The execution time is expected to be shorter and more consistent for the FIFO ap
 \subsection{Problem Representation and Assumptions}
 The objective is to minimize the total travel time for all AGV to complete their missions. At this stage the missions just consist of reaching the end of their assigned path $\pi_i$. 
 
+The path $\pi_i$ can be divided based on longitudinal distance $s$ into three parts. The first part $\alpha_i$ approaching conflict where $s<s\_begin$, a part traversing the conflict zone $\beta_i$ where $s\_begin < s < s\_end$, and a part leaving the intersection $\beta_i$ where $s >s_{end}$. 
+
 \begin{itemize}
 \item[A1] No external obstacles can be found on the roadmap
-\item[A2] Waypoint instructions are only sent with sufficient approach distance remaining to adjust speed  before reaching the first waypoint  $s_begin-s > min\_conflict\_dist$ 
-\item[A3] The conflict zone must be long enough for the longitudinal controller to reach the second waypoint at the right time $s\_end - s\_begin > min\_conflict\_dist$ 
+\item[A2] Waypoint instructions are only sent with sufficient approach distance remaining to adjust speed  before reaching the first waypoint  $s\_begin - s > min\_conflict\_dist$ 
+\item[A3] The conflict zone must be long enough to reach the second waypoint at the right time without violating acceleration limits $s\_end - s\_begin > min\_conflict\_dist$ 
 \item[A4] Followers on path $\pi_i$ only begin to move after the lead AGV has cleared the intersection 
 \item[A5] Each AGV has a unique initial and final position
 \item[A6] The full set of paths through the intersection is known at initialization time
 \item[A7] All waypoints can be reached with an average speed $v < \hat{v}$
 \end{itemize}
 
-Based on A6 we can compute the shape of the conflict zone. This is defined in path coordinates by the earliest intersection point with any other path $s_{begin}$ and the latest intersection point $s_end$. As AGVs have some bodywork extending around their control point, the conflict must be expanded by the diameter of the bounding circle. In this way, an AGV waiting outside the conflict zone can never collide with one inside. 
+Based on A6 we can compute the shape of the conflict zone. This is defined in path coordinates by the earliest intersection point with any other path $s_{begin}$ and the latest intersection point $s_{end}$. As AGVs have some bodywork extending around their control point, the conflict must be expanded by the diameter of the bounding circle. In this way, an AGV waiting outside the conflict zone can never collide with one inside. 
 
-Assumption A2 means the optimization problem can  be solved for a bounded average speed in each region. the upper bound is set based on the maximum acceleration parameter of the AGV model. 
+Assumption A2 means the optimization problem can  be solved for a bounded average speed in each region. the upper bound is set based on the maximum acceleration parameter of the AGV model.
+
+The constraints
+ 
 \subsection{FCFS}
 \subsection{Quad\_constr}
     
@@ -108,10 +113,16 @@ The speeds were converted into timed waypoints which the AGV controllers must me
 
 The first test is inspired by the published results in \cite{Digani2019}, showing the improvement of intersection management similar to Quad\_constr over decentralized negotiation. The tests took place on a close duplicate of two realistic intersection layouts with fixed direction lanes.
 
-Over ten runs, one AGV was initialized at each entrance, and assigned a random exit.   The clearing time Tclearing for the last vehicle to leave the intersection is recorded in each run. The execution time to calculate the optimal waypoint times for every vehicle was calculated at the start Texec. The worst delay for a single AGV compared to its free flow time to cross the intersection Twait is also recorded.
-Twait is defined somewhat differently to Digani 2019. In that paper the metric captures the time spent stationary so the optimal method has zero waiting time in every case. The waiting time is averaged over different AGV in each run, and the worst run average is recorded for that layout.
-In the table below Twait = crossing\_time - PathLength/max\_speed so the figure is non zero even for optimal methods. It represents the delay caused by the intersection compared to free flow speed. In some cases it is slightly negative, because vehicles can exceed the maximum speed to meet the waypoints given by the intersection manager.   
+Over ten runs, one AGV was initialized at each entrance, and assigned a random exit.   The clearing time $Tclearing$ for the last vehicle to leave the intersection is recorded in each run. The execution time to calculate the optimal waypoint times for every vehicle was calculated at the start $Texec$. The worst delay for a single AGV compared to its free flow time to cross the intersection $Twait$ is also recorded.
+$Twait$ is defined somewhat differently to Digani 2019. In that paper the metric captures the time spent stationary so the optimal method has zero waiting time in every case. The waiting time is averaged over different AGV in each run, and the worst run average is recorded for that layout.
+
+\begin{equation}
+\label{eq:twait}
+Twait = crossing\_time - \frac{PathLength}{max\_speed} 
+\end{equation}
+In the table below $Twait$ is calculated according to Equation \ref{eq:twait} so it is likely to be non-zero, even for optimal methods. It represents the delay caused by the intersection compared to free flow speed. In some cases it is slightly negative, because vehicles can exceed the maximum speed to meet the waypoints given by the intersection manager.   
 \section{Numerical Results}
+\label{sec:num_res}
 \bibliographystyle{unsrt}
 \bibliography{references_multi}
 \end{document}
