@@ -60,6 +60,13 @@
 
 \begin{document}
 \maketitle
+\section{Introduction}
+The wider motion coordination problem faced by fleets of identical material transfer AGVs is described in Problem \ref{prob1}. AGVs are used to complete missions at different locations in a network of connected paths. Using the 2-level decomposition of \cite{Digani2015}, Problem \ref{prob1} can be broken down into a high level zone capacitated routing problem and a local coordination sub problem within each zone. Autonomous Intersection Management (AIM) is one approach to solving the local coordination sub problem.
+
+\paragraph{Problem 1}
+\label{prob1}
+Given a number $N<\bar{N}$ of AGV operating on a fixed network of paths $[\pi_0, ... \pi_N]$, what trajectory should each one follow to allow all the missions to be completed in the minimum AGV-Time while a safe distance is maintained between each one at all times.
+
 \section{Aim}
 To compare the performance of an intersection manager with fixed First-In-First-Out (FIFO) crossing order with a published method based on a non-convex optimization with Linear objective and Quadratic constraints (Quad\_constr), in which the crossing order can be varied to improve the objective, which is to minimize the sum of crossing time for a set number of participants. The numerical performance of the intersection manager is also important for its use as a real-time safety critical system, including the scaling with increasing numbers of approaching vehicles. 
 
@@ -71,6 +78,19 @@ Otherwise, both approaches make the same simplifying assumptions about the const
 The execution time is expected to be shorter and more consistent for the FIFO approach, as this produces a linear program which can be solved efficiently. The Quad\_constr approach must search a non-convex space, so it is expected to take longer to solve. It is also expected to have an unpredictable solution time, which may limit the scale at which is can be applied, and possibly rule out its use as a  standalone collision avoidance method at any scale.
 
 \section{Method}
+\subsection{Problem Representation and Assumptions}
+The objective is to minimize on the total travel time for all AGV to complete their missions. At this stage the missions just consist of reaching the end of their assigned path through the intersection $\pi_i$. 
+\begin{itemize}
+\item[A1] No external obstacles can be found on the roadmap
+\item[A2] Time-critical waypoints can be reached exactly by the longitudinal controller provided the remaining distance $d>min\_conflict\_dist$ and the average speed to reach the waypoint $v < \hat{v}$
+\item[A3] Followers on path $\pi_i$ only begin to move after the lead AGV has cleared the intersection 
+\item[A4] Each AGV has a unique initial and final position
+\end{itemize}
+\subsection{FCFS}
+\subsection{Quad\_constr}
+    
+
+\section{Numerical Experiment}
 The two intersection managers were implemented in Python with an identical messaging interface to communicate with a collection of AGV controllers with simplified dynamics. 
 
 The FIFO speeds were found with scipy.optimize.linprog and the vehicles ordered with the Python 3.7.6 function sorted
@@ -78,12 +98,14 @@ The FIFO speeds were found with scipy.optimize.linprog and the vehicles ordered 
 The Quad\_constr speeds were found with scipy.optimize.minimize given the analytical Jacobian and Hessian.
 The speeds were converted into timed waypoints which the AGV controllers must meet as closely as possible. This conversion takes the constant speed solution for the intersection problem and retains only the safety critical part at the entry and exit of the conflict zone to pass to the AGV controllers. Vehicles with second order dynamics were also simulated.
 
-The first test is inspired by the published results in Digani 2019, showing the improvement of intersection management similar to Quad\_constr over decentralized negotiation. The tests took place on a close duplicate of two realistic intersection layouts with fixed direction lanes.
+The first test is inspired by the published results in \cite{Digani2019}, showing the improvement of intersection management similar to Quad\_constr over decentralized negotiation. The tests took place on a close duplicate of two realistic intersection layouts with fixed direction lanes.
 
 Over ten runs, one AGV was initialized at each entrance, and assigned a random exit.   The clearing time Tclearing for the last vehicle to leave the intersection is recorded in each run. The execution time to calculate the optimal waypoint times for every vehicle was calculated at the start Texec. The worst delay for a single AGV compared to its free flow time to cross the intersection Twait is also recorded.
 Twait is defined somewhat differently to Digani 2019. In that paper the metric captures the time spent stationary so the optimal method has zero waiting time in every case. The waiting time is averaged over different AGV in each run, and the worst run average is recorded for that layout.
 In the table below Twait = crossing\_time - PathLength/max\_speed so the figure is non zero even for optimal methods. It represents the delay caused by the intersection compared to free flow speed. In some cases it is slightly negative, because vehicles can exceed the maximum speed to meet the waypoints given by the intersection manager.   
-
+\section{Numerical Results}
+\bibliographystyle{unsrt}
+\bibliography{references_multi}
 \end{document}
 
 
