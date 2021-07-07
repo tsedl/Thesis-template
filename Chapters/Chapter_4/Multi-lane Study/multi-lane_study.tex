@@ -79,13 +79,21 @@ The execution time is expected to be shorter and more consistent for the FIFO ap
 
 \section{Method}
 \subsection{Problem Representation and Assumptions}
-The objective is to minimize on the total travel time for all AGV to complete their missions. At this stage the missions just consist of reaching the end of their assigned path through the intersection $\pi_i$. 
+The objective is to minimize the total travel time for all AGV to complete their missions. At this stage the missions just consist of reaching the end of their assigned path $\pi_i$. 
+
 \begin{itemize}
 \item[A1] No external obstacles can be found on the roadmap
-\item[A2] Time-critical waypoints can be reached exactly by the longitudinal controller provided the remaining distance $d>min\_conflict\_dist$ and the average speed to reach the waypoint $v < \hat{v}$
-\item[A3] Followers on path $\pi_i$ only begin to move after the lead AGV has cleared the intersection 
-\item[A4] Each AGV has a unique initial and final position
+\item[A2] Waypoint instructions are only sent with sufficient approach distance remaining to adjust speed  before reaching the first waypoint  $s_begin-s > min\_conflict\_dist$ 
+\item[A3] The conflict zone must be long enough for the longitudinal controller to reach the second waypoint at the right time $s\_end - s\_begin > min\_conflict\_dist$ 
+\item[A4] Followers on path $\pi_i$ only begin to move after the lead AGV has cleared the intersection 
+\item[A5] Each AGV has a unique initial and final position
+\item[A6] The full set of paths through the intersection is known at initialization time
+\item[A7] All waypoints can be reached with an average speed $v < \hat{v}$
 \end{itemize}
+
+Based on A6 we can compute the shape of the conflict zone. This is defined in path coordinates by the earliest intersection point with any other path $s_{begin}$ and the latest intersection point $s_end$. As AGVs have some bodywork extending around their control point, the conflict must be expanded by the diameter of the bounding circle. In this way, an AGV waiting outside the conflict zone can never collide with one inside. 
+
+Assumption A2 means the optimization problem can  be solved for a bounded average speed in each region. the upper bound is set based on the maximum acceleration parameter of the AGV model. 
 \subsection{FCFS}
 \subsection{Quad\_constr}
     
