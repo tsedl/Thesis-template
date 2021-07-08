@@ -24,6 +24,7 @@
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
 %%% PACKAGES
+\usepackage{bm}
 \usepackage{booktabs} % for much better looking tables
 \usepackage{array} % for better arrays (eg matrices) in maths
 \usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
@@ -95,23 +96,68 @@ The path $\pi_i$ can be divided based on longitudinal distance $s$ into three pa
 
 Assumption A4 ensures that car-following behaviour does not factor in the following analysis. In the test system arrivals were limited at the source, which counted AGVs already present on any of the associated lane alternatives, and if the lane capacity was exceeded further arrivals were stacked in a vertical queue.    
 
-Based on A6 we can compute the shape of the conflict zone. This is defined in path coordinates by the earliest intersection point with any other path $s_{begin}$ and the latest intersection point $s_{end}$. As AGVs have some bodywork extending around their control point, the conflict must be expanded by the diameter of the bounding circle. In this way, an AGV waiting outside the conflict zone can never collide with one inside. 
+Based on A6 we can compute the shape of the conflict zone. This is defined in path coordinates by the earliest intersection point with any other path $s\_begin$ and the latest intersection point $s\_end$. As AGVs have some bodywork extending around their control point, the conflict must be expanded by the diameter of the bounding circle. In this way, an AGV waiting outside the conflict zone can never collide with one inside. 
 
 Assumption A2 means the optimization problem can  be solved for a bounded average speed in each region. the upper bound is set based on the maximum acceleration parameter of the AGV model.
 
-The collision avoidance constraints can be expressed in terms of the time of arrival $ta_i$ and departure $td_i$ of a pair of approaching AGV in conflict.
-
-For safe crossing between AGV $i$ and $j$ we require Equation \ref{eq:safety} holds.
+The collision avoidance constraints can be expressed in terms of the arrival time $a_i$ of one and the departure time $d_j$ of the other of a pair of approaching AGV in conflict. For safe crossing between AGV $i$ and $j$ we require the condition in Equation \ref{eq:safety}  holds.
 \begin{equation}
 \label{eq:safety}
-ta_i > td_j OR ta_j > td_i
+a_i > d_j \lor a_j > d_i
 \end{equation}
-The only difference between the two methods is hos they transform this constraint into an standard form optimization which can be solved with convex methods.
+
+The only difference between the two AIM approaches is the way they transform this condition into constraints on a standard form optimization which can be solved with convex methods. One uses a fixed order leading to to linear constraints and the other permits any ordering through quadratic constraints. 
+
+Both optimize over the same parameter vector $\bm{\phi}$ as defined in Equation \ref{eq:phi}. This contains a stack of pairs of reciprocal average speeds. One for section $\alpha$ and one across section $\beta$.
+\begin{equation}
+\label{eq:phi}
+\bm{\phi} = \left[\begin{array}{c}
+	1/v_{\alpha,0} \\
+	1/v_{\beta,0} \\
+	\vdots \\
+	1/v_{\alpha,0} \\
+	1/v_{\beta,0}
+\end{array}\right]
+\end{equation}   
+
+The constraint on approaching vehicles from those which are already past their own decision point is the same for both approaches. Every approaching AGV must have an arrival time $(s_i - s\_begin_i)\phi_i$ greater than the latest departure time of any crossing vehicle $d_j$. Setting $t_p = \max_j{d_j}$ and $\bm{t}_p = t_p \times \bm{1}\in R^{(1 \times N)}$ to create N constraints from the single value of $t_p$ this can be expressed  
+as in Equation \ref{eq:crossing}.
+\begin{equation}
+\label{eq:crossing}
+\left[\begin{array}{cccc}
+	s_0 - s\_begin_0 & 	0 & \ddots & \bm{0}\\
+	\vdots & & \ddots & \vdots \\
+	\bm{0} & \ddots & s_N - s\_begin_N & 	0 
+\end{array}\right]\bm{\phi}
+\leq 
+\bm{t_p}
+\end{equation}
  
-\subsection{FCFS}
+\subsection{FIFO}
+For this method the pairs in $\bm{\phi}$ must be sorted by the remaining distance along path $\alpha$ before the start of the conflict $s - s\_begin$.  As the conflict zone extent is a fixed property of the intersection this distance will not change when other vehicles arrive on new paths, so the ordering is stable. After sorting, index $i+1$ will be further from the decision point than index $i$. Then Equation \ref{eq:safety} can be expressed as
+
+\begin{equation}
+\label{eq:fifo}
+\left[\begin{array}{cccc}
+	s_0 - s\_begin_0 & 	s_0 - s\_end_0 & \ddots & \bm{0}\\
+	\vdots & & \ddots & \vdots \\
+	\bm{0} & \ddots & s_N - s\_begin_N & 	s_N - s\_end_N 
+\end{array}\right]\bm{\phi}
+\leq 
+\left[\begin{array}{c}
+	a_0 \\
+	d_0 \\
+	\vdots \\
+	a_N \\
+	d_N
+\end{array}\right]
+\end{equation}
+
+Care should be taken to exclude from $\bm{\phi}$ those AGV which have already passed the decision point defined as $s\_begin - min\_conflict\_length$. The motion of these vehicles can no longer be altered because the on-board longitudinal controller would likely be unable to meet the new waypoint times due to physical limits on acceleration. 
+
 
 \subsection{Quad\_constr}
-    
+
 
 \section{Numerical Experiment}
 The two intersection managers were implemented in Python with an identical messaging interface to communicate with a collection of AGV controllers with simplified dynamics. 
